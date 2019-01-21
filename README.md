@@ -7,7 +7,7 @@ This project contains a game RPG, with theme of pirates and fishers. This game a
 For run the game locally on your machine, is necessarily to download the repository.
 That can be make by:
 '''
-git clone --bare https://github.com/LucasRR94/RPG_Pirates_and_Fishers.git <br /n>
+git clone --bare https://github.com/LucasRR94/RPG_Pirates_and_Fishers.git __
 python3 game.py
 '''
 
@@ -26,5 +26,5 @@ python 3 installed
 
 ## License
 
-This project is licensed under the Apache License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache License - see the [LICENSE.md](LICENSE) file for details
 
