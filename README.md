@@ -15,7 +15,7 @@ python3 game.py
 The game is made entirely in python 3, so it's the only requisite.
 
 ```
-python 3 installed
+python 3 
 ```
 
 ## Authors
