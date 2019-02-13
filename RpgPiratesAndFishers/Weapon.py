@@ -41,7 +41,7 @@ class Weapon(Item):
 		
 		return (self.impact * self.speed)
 	
-	# Get the report of what type of item it is, and what is the capacity
+	
 	def getDetail(self):
 		""" 
 		Return a report for the user, about the object, what is the use, and attributes
@@ -49,4 +49,6 @@ class Weapon(Item):
 		
 		@return : (string) contains a report with the attributes of the object,like attack, defense, capacity of heal.
 		"""
-		return "\n#########################################################\n"+"\nItem of Attack, Name of item:"+self.getName()+"\nCapacity of attack:"+str(self.getAttack())+"\nCapacity de defense:0 \n Capacity of heal:0 \n"+"#########################################################\n"		
+		return (super().setParameters(self.getAttack(),0,0))
+		
+	#	return "\n#########################################################\n"+"\nItem of Attack, Name of item:"+self.getName()+"\nCapacity of attack:"+str(self.getAttack())+"\nCapacity de defense:0 \n Capacity of heal:0 \n"+"#########################################################\n"		

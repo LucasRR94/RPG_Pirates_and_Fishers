@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------------------------------------------------------------------#
+from abc import ABCMeta, abstractmethod
+from libGamePiratesAndFishers import assertIfIsWeelFormat
 
 class Item(object):
 	""" 
@@ -18,8 +20,10 @@ class Item(object):
 		
 		@return : None
 		"""
-		self.name = name
-
+		self.name = assertIfIsWeelFormat(name)
+		self.capacityDefense = 0
+		self.capacityAttack = 0
+		self.capacityhealing = 0
 
 	def treatedInputtoInt(self,enter):
 		""" 
@@ -78,9 +82,24 @@ class Item(object):
 		"""
 		return(self.name)
 	
+
+	def setParameters(self,attack,defense,healing):
+		""" 
+		setting the attributes for the class, in order of attack, defense, healing capacity
+		
+		@return : none
+		"""
+		self.capacityAttack= attack
+		self.capacityDefense = defense
+		self.capacityhealing = healing
+		
+		return  "\n#########################################################\n"+"\n Item , Name of item:"+self.getName()+"\nCapacidade of healing of Item: "+str(self.capacityhealing) +"\nCapacidade of attack of Item: "+str(self.capacityAttack) + "\nCapacidade of defense of Item: "+str(self.capacityDefense)+ "\n#########################################################\n"
+		
+	@abstractmethod	
 	def getDetail(self):
 		""" 
-		It's a interface, it's implemented in the subclasses, how return a report of what precisely it's item
+		It's a abstract method, all subclass should havet, print a report with attack , defense and healing capacity
+		of the Item
 		
 		"""
 		pass

@@ -4,7 +4,7 @@ from Item import *
 
 class Defense(Item):
 	""" 
-		This class Define object type Defense, it is a base for object used for defense in application.
+		This class Define object type Defense, it is a base for object used for defense in the application.
 	""" 
 
 	def __init__(self,name,maneuverability,protection):
@@ -25,6 +25,17 @@ class Defense(Item):
 		self.maneuverability = super().limitsValues(maneuverability)
 		self.protection = super().limitsValues(protection)
 
+	def __del__(self):
+		""" 
+		it's destroy the object.
+		
+		@param  : None
+		@return : None
+
+		"""
+		self.maneuverability = 0 
+		self.protection = 0 
+
 
 	def getDefense(self):
 		""" 
@@ -37,19 +48,25 @@ class Defense(Item):
 	
 	def reportDamage(self,damage):
 		""" 
-		When someone attack the Object  type defense, this method update the new attributes values
+		When someone attack the Object  type defense, this method update the new attributes values, if damage
+		if bigger or equal then defense, it's makes useless the item, without effect.
 
 		@param damage : (string) contains the value that will be used for calculated update for the attributes
 		
 		@return : None
 		"""
 		defense = self.getDefense()
-		if(defense <= damage):
-			self.impenetrabilidade = 0
-		if(defense > damage):
-			recalculateddefense = self.getDefense() -  damage
-			self.maneuverability = 1
-			self.protection = recalculateddefense
+		if(type(damage) is int):
+			if(damage >= 0):
+				if(defense <= damage):
+					self.__del__()
+					return 0
+				if(defense > damage):
+					recalculateddefense = defense -  damage
+					self.maneuverability = 1
+					self.protection = recalculateddefense
+					return self.getDefense()
+
 
 	def getDetail(self):
 		""" 
@@ -58,5 +75,8 @@ class Defense(Item):
 		
 		@return : (string) contains a report with the attributes of the object,like attack, defense, capacity of heal.
 		"""
-		return "\n#########################################################\n"+"\nItem of Defense, Name of item:"+self.getName()+"\nCapacity of defense:"+str(self.getDefense())+"\nCapacity of attack:0 \n Capacity of heal:0 \n"+"#########################################################\n"
+		
+		return (super().setParameters(0,self.getDefense(),0))
+		
+		#return "\n#########################################################\n"+"\nItem of Defense, Name of item:"+self.getName()+"\nCapacity of defense:"+str(self.getDefense())+"\nCapacity of attack:0 \n Capacity of heal:0 \n"+"#########################################################\n"
 		
