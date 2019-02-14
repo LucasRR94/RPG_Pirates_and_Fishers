@@ -25,6 +25,23 @@ class Item(object):
 		self.capacityAttack = 0
 		self.capacityhealing = 0
 
+
+	def __del__(self):
+		""" 
+		it's  destructor from the class, cleaning all the attributes
+		
+
+		@param none : 
+		
+
+		@return : None
+		"""
+		self.name = None
+		self.capacityDefense = None
+		self.capacityAttack = None
+		self.capacityhealing = None
+
+
 	def treatedInputtoInt(self,enter):
 		""" 
 			it's treat the enters , to make shure that are number's
