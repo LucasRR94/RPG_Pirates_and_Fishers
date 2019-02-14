@@ -33,7 +33,7 @@ class Medkit(Item):
 		@return : None
 
 		"""
-		self.name = ''
+		super().__del__()
 		self.healing = 0		
 	
 	def __treatedInputtoIntMedkit(self,enter):
