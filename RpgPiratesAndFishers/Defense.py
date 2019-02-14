@@ -33,10 +33,11 @@ class Defense(Item):
 		@return : None
 
 		"""
+		super().__del__()
 		self.maneuverability = 0 
 		self.protection = 0 
 
-
+	
 	def getDefense(self):
 		""" 
 		Simple return the number who represent the capacity of defense of the object
