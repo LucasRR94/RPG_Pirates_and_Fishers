@@ -31,6 +31,20 @@ class Weapon(Item):
 
 		self.speed = super().limitsValues(speed)
 
+	def __del__(self):
+		""" 
+		it's  destructor from the class, cleaning all the attributes
+		
+
+		@param none : 
+		
+
+		@return : None
+		"""
+		super().__del__()
+		self.impact = None
+		self.speed = None
+	
 	
 	def getAttack(self):
 		""" 
