@@ -76,7 +76,7 @@ class Individual(object):
 		"""
 		return self.defense
 
-	def getAttack(self,attack):
+	def getAttack(self):
 		"""
 		it's return an attribute of the class that represent the attack of the individual in the game
 
@@ -228,11 +228,15 @@ class Individual(object):
 			
 			backuphealth = self.getHealth()
 			updatevalue = newnumb + backuphealth
-			if(updatevalue>=100):
+			if(updatevalue >= 100):
 				self.__setHealth(100)
 				return 1
+
+			elif(newnumb == 0):
+				return 1
+
 			else:
-				self.__setHealth(newvalue)
+				self.__setHealth(updatevalue)
 				return 1
 
 		if(type(valuehealth) is str):
@@ -246,13 +250,16 @@ class Individual(object):
 
 				if(newnumb < 0):
 					newnumb = 0
+
 				backuphealth = self.getHealth()
 				updatevalue = newnumb + backuphealth
 				if(updatevalue>=100):
 					self.__setHealth(100)
 					answer = 1
+				elif(newnumb == 0):
+					answer= 1
 				else:
-					self.__setHealth(newvalue)
+					self.__setHealth(updatevalue)
 					answer = 1
 
 			finally:
