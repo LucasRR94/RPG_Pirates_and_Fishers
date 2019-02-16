@@ -207,12 +207,22 @@ def testusignMedkit(individual,intmedkit,caseStudy):
 
 		elif(pretendvalue < 0):
 			try:
-				assert(((individual.usingMedkit(intmedkit) == 0) and (individual.getHealth() == oldvaluehealth)))
+				assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == oldvaluehealth)))
 			except AssertionError:
 				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(oldvaluehealth)+ " ,Is: "+str(individual.getHealth())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
+		
+		elif(pretendvalue < oldvaluehealth):
+			try:
+				assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == oldvaluehealth)))
+			except AssertionError:
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(oldvaluehealth)+ " ,Is: "+str(individual.getHealth())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+		
 		else:
 			try:
 				assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == pretendvalue)))
@@ -244,11 +254,19 @@ def testusignMedkit(individual,intmedkit,caseStudy):
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
-			elif(pretendvalue < 0):
+			elif(pretendvalue < 0 and newnumb < 0):
 				try:
-					assert(((individual.usingMedkit(intmedkit) == 0) and (individual.getHealth() == oldvaluehealth)))
+					assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == oldvaluehealth)))
 				except AssertionError:
-					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluehealth)+ " ,Is: "+str(individual.getHealth())+'\n')
+					print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : "+str(oldvaluehealth)+ " ,Is: "+str(individual.getHealth())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: " +str(caseStudy)+'\n')
+			elif(pretendvalue < oldvaluehealth):
+				try:
+					assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == oldvaluehealth)))
+				except AssertionError:
+					print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(oldvaluehealth)+ " ,Is: "+str(individual.getHealth())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -256,7 +274,7 @@ def testusignMedkit(individual,intmedkit,caseStudy):
 				try:
 					assert(((individual.usingMedkit(intmedkit) == 1) and (individual.getHealth() == pretendvalue)))
 				except AssertionError:
-					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getHealth())+'\n')
+					print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getHealth())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -271,8 +289,94 @@ def testusignMedkit(individual,intmedkit,caseStudy):
 		else:
 			print("Test sucessfull: "+str(caseStudy)+'\n')
 
-def testchangeAttack():
-	pass
+
+
+def testchangeAttack(individual,newattack,caseStudy):
+	#individual.changeAttack((int) newattackvalue) --> function
+	if(type(newattack) is int):
+		oldvalueattack = individual.getAttack()
+		resultfunc = individual.changeAttack(newattack)
+		if(newattack > 100):
+			try:
+				assert((resultfunc == oldvalueattack) and (individual.getAttack() == 100))
+			except AssertionError:
+				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getAttack())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+
+		elif(newattack < 0):
+			try:
+				assert((resultfunc == oldvalueattack) and (individual.getAttack() == 0))
+			except AssertionError:
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(newnumb)+ " ,Is: "+str(individual.getAttack())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+		else:
+			try:
+				assert((resultfunc == oldvalueattack) and (individual.getAttack() == newattack))
+			except AssertionError:
+				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newattack)+ " ,Is: "+str(individual.getAttack())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+
+	elif(type(newattack) is str):
+		try:
+			newnumb = int(newattack)
+		except (ValueError,TypeError) as e:
+			try:
+				resultfunc = individual.changeAttack(newattack)
+				assert(resultfunc[0]==None)
+			except:
+				print("\033[91m Error , that was added a strange value in attack, case study: "+str(caseStudy)+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+		else:
+			oldvalueattack = individual.getAttack()
+			if(newnumb > 100):
+				try:
+					resultfunc = individual.changeAttack(newnumb)
+					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 100))
+				except AssertionError:
+					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getHealth())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: "+str(caseStudy)+'\n')
+
+			elif(newnumb < 0):
+				try:
+					resultfunc = individual.changeAttack(newnumb)
+					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 0))
+				except AssertionError:
+					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluehealth)+ " ,Is: "+str(individual.getAttack())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: " +str(caseStudy)+'\n')
+			else:
+				try:
+					resultfunc = individual.changeAttack(newnumb)
+					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == newnumb))
+				except AssertionError:
+					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getAttack())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: "+str(caseStudy)+'\n')
+
+	else:
+		oldvalueattack = individual.getAttack()
+		try:
+			resultfunc = individual.changeAttack(newattack)
+			assert((individual.getAttack()==oldvalueattack) and (not(individual.getAttack() == newattack)) and(resultfunc[0] == None))
+		except AssertionError:
+			print("\033[91m Error, anomalously sum tho the attribute attack, Case study: ",caseStudy,"\n")
+			exit()
+		else:
+			print("Test sucessfull, case study: ",caseStudy,"\n")
+
+
 
 def testchangeDefense():
 	pass
@@ -310,7 +414,27 @@ if __name__ == "__main__":
 	for i in range(1000):
 		randomhealth = random.randint(0,100)	
 		randomkitmed = random.randint(-1000,1000)
+		randomkitmed2 = random.randint(-1000,100)
 		genIndividual = Individual(wordgen,randomhealth,10,10)
-		testusignMedkit(genIndividual,randomhealth,i)
+		testusignMedkit(genIndividual,randomhealth,('f'+str(i)))
+		testusignMedkit(genIndividual,randomkitmed2 ,('s'+str(i)))
+		testusignMedkit(genIndividual,str(randomkitmed),('fs'+str(i)))
+		testusignMedkit(genIndividual,str(randomkitmed2),('ss'+str(i)))
+	randomhealth = random.randint(0,100)
+	genIndividual = Individual(wordgen,randomhealth,10,10)
 	testusignMedkit(genIndividual,listsimple,"C1")
 	testusignMedkit(genIndividual,simpleobject,"C2")
+	# test testchangeAttack 
+	testchangeAttack(genIndividual,listsimple,"O1")
+	testchangeAttack(genIndividual,simpleobject,"O2")
+	for i in range(1000):
+		randomparameter = random.randint(0,100)	
+		randomattack = random.randint(-1000,1000)
+		randomattack2 = random.randint(-1000,100)
+		genIndividual = Individual(wordgen,randomparameter,randomparameter,randomparameter)
+		testchangeAttack(genIndividual,randomattack,('testchangeAttack: '+str(i)))
+		testchangeAttack(genIndividual,randomattack2,('testchangeAttack'+str(i)))
+		testchangeAttack(genIndividual,str(randomattack),('testchangeAttacks:'+str(i)))
+		testchangeAttack(genIndividual,str(randomattack2),('testchangeAttackss:'+str(i)))
+	
+	
