@@ -309,7 +309,7 @@ def testchangeAttack(individual,newattack,caseStudy):
 			try:
 				assert((resultfunc == oldvalueattack) and (individual.getAttack() == 0))
 			except AssertionError:
-				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(newnumb)+ " ,Is: "+str(individual.getAttack())+'\n')
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getAttack())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -341,7 +341,7 @@ def testchangeAttack(individual,newattack,caseStudy):
 					resultfunc = individual.changeAttack(newnumb)
 					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 100))
 				except AssertionError:
-					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getHealth())+'\n')
+					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getDefense())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -351,7 +351,7 @@ def testchangeAttack(individual,newattack,caseStudy):
 					resultfunc = individual.changeAttack(newnumb)
 					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 0))
 				except AssertionError:
-					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluehealth)+ " ,Is: "+str(individual.getAttack())+'\n')
+					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvalueattack)+ " ,Is: "+str(individual.getAttack())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: " +str(caseStudy)+'\n')
@@ -378,11 +378,170 @@ def testchangeAttack(individual,newattack,caseStudy):
 
 
 
-def testchangeDefense():
-	pass
+def testchangeDefense(individual,newdefense,caseStudy):
+	#individual.changeDefense((int) newdefense(value) --> function
+	if(type(newdefense) is int):
+		oldvaluedefense = individual.getDefense()
+		resultfunc = individual.changeDefense(newdefense)
+		if(newdefense > 100):
+			try:
+				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == 100))
+			except AssertionError:
+				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getDefense())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
 
-def testgetdamage():
-	pass
+		elif(newdefense < 0):
+			try:
+				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == 0))
+			except AssertionError:
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getDefense())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+		else:
+			try:
+				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == newdefense))
+			except AssertionError:
+				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newdefense)+ " ,Is: "+str(individual.getDefense())+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+
+	elif(type(newdefense) is str):
+		try:
+			newnumb = int(newdefense)
+		except (ValueError,TypeError) as e:
+			try:
+				resultfunc = individual.changeDefense(newdefense)
+				assert(resultfunc[0]==None)
+			except:
+				print("\033[91m Error , that was added a strange value in defense, case study: "+str(caseStudy)+'\n')
+				exit()
+			else:
+				print("Test sucessfull: "+str(caseStudy)+'\n')
+		else:
+			oldvaluedefense = individual.getDefense()
+			if(newnumb > 100):
+				try:
+					resultfunc = individual.changeDefense(newnumb)
+					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == 100))
+				except AssertionError:
+					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getDefense())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: "+str(caseStudy)+'\n')
+
+			elif(newnumb < 0):
+				try:
+					resultfunc = individual.changeDefense(newnumb)
+					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == 0))
+				except AssertionError:
+					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluedefense)+ " ,Is: "+str(individual.getDefense())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: " +str(caseStudy)+'\n')
+			else:
+				try:
+					resultfunc = individual.changeDefense(newnumb)
+					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == newnumb))
+				except AssertionError:
+					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getDefense())+'\n')
+					exit()
+				else:
+					print("Test sucessfull: "+str(caseStudy)+'\n')
+
+	else:
+		oldvaluedefense = individual.getDefense()
+		try:
+			resultfunc = individual.changeDefense(newdefense)
+			assert((individual.getDefense()==oldvaluedefense) and (not(individual.getDefense() == newdefense)) and(resultfunc[0] == None))
+		except AssertionError:
+			print("\033[91m Error, anomalously sum tho the attribute defense, Case study: ",caseStudy,"\n")
+			exit()
+		else:
+			print("Test sucessfull, case study: ",caseStudy,"\n")
+
+	
+
+def testgetdamage(individual,causeDamage,caseStudy):
+	#individual.getDamage(causeDamage) # that is responsible by passing a damage to defense and health 0...200
+	if((type(causeDamage) is str) or (type(causeDamage) is int)):
+		newnumb = causeDamage
+		if(type(causeDamage) is str):
+			try:
+				newnumb = int(causeDamage)
+			except ValueError:
+				backuphealth  = individual.getHealth()
+				backupdefense = individual.getDefense()
+				result = individual.getDamage(causeDamage)
+				try:
+					assert(result == 0 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+				except AssertionError:
+					print("Error, anomalously, not possible convert str object, subtracted from health ou defense, case study: "+str(caseStudy))
+					return 0
+				else:
+					print("Test sucessfull,not possible convert str object, case study:"+str(caseStudy))
+					return 0
+
+			if(newnumb > 0):
+				if(newnumb <= individual.getDefense()):
+					valueexceedofdefense = individual.getDefense() - newnumb
+					backuphealth = individual.getHealth()
+					try:
+						result = individual.getDamage(newnumb)
+						assert(result == 1 and backuphealth == individual.getHealth() and valueexceedofdefense == individual.getDefense())
+					except AssertionError:
+						print("Error , that was necessary this value for defense: "+str(valueexceedofdefense)+"but function returns : "+str(individual.getDefense())+"case study: "+str(caseStudy))
+					else:
+						print("Test sucessfull, case study: "+str(caseStudy))
+				else:
+					backuphealth = individual.getHealth()
+					backupdefense = individual.getDefense()
+					result = individual.getDamage(newnumb)
+					valueexceedofdefense = newnumb - backupdefense 
+					if(valueexceedofdefense >= backuphealth): # death
+						try:
+							assert(individual.getHealth() == None and individual.getDefense()==None and individual.getAttack() == None and result == 1)
+						except AssertionError:
+							print("Error, (case when defense and health exist )this object should that be destroyed, study case: "+str(caseStudy))
+						else:
+							print("Test sucessfull, Study case: "+str(caseStudy))
+					else:	#alive
+						try:
+							assert(individual.getDefense() == 0 and individual.getHealth() == (backuphealth - valueexceedofdefense) and result == 1)
+						except AssertionError:
+							print("Error, (case when defense was gone and there is just health),health should be: "+str((backuphealth - valueexceedofdefense))+" it is: "+str(individual.getHealth())+" Case study: "+str(caseStudy))
+						else:
+							print("Test sucessfull, Study case: "+str(caseStudy))	
+			else:
+				backuphealth  = individual.getHealth()
+				backupdefense = individual.getDefense()
+				result = individual.getDamage(newnumb)
+				try:
+					assert(result == 1 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+				except AssertionError:
+					print("Error, (Case numb less than zero ), anomalously subtracted from health ou defense, case study: "+str(caseStudy))
+					return 0
+				else:
+					print("Test sucessfull, case study:"+str(caseStudy))
+					return 0
+
+		
+	else:
+		backuphealth  = individual.getHealth()
+		backupdefense = individual.getDefense()
+		result = individual.getDamage(causeDamage)
+		
+		try:
+			assert(result == 0 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+		except AssertionError:
+			print("Error, (object is not a str or int)anomalously subtracted from health ou defense, case study: "+str(caseStudy))
+		else:
+			print("Test sucessfull, case study:"+str(caseStudy))
+	return 0
+	#pass
 
 class simpleClass(object):
 	def __init__(self,principal):
@@ -433,8 +592,36 @@ if __name__ == "__main__":
 		randomattack2 = random.randint(-1000,100)
 		genIndividual = Individual(wordgen,randomparameter,randomparameter,randomparameter)
 		testchangeAttack(genIndividual,randomattack,('testchangeAttack: '+str(i)))
-		testchangeAttack(genIndividual,randomattack2,('testchangeAttack'+str(i)))
+		testchangeAttack(genIndividual,randomattack2,('testchangeAttack1: '+str(i)))
 		testchangeAttack(genIndividual,str(randomattack),('testchangeAttacks:'+str(i)))
 		testchangeAttack(genIndividual,str(randomattack2),('testchangeAttackss:'+str(i)))
 	
+	# test testchangeDefense
+	randomdefense = random.randint(0,100)
+	genIndividual = Individual(wordgen,10,10,randomdefense)
+	testchangeDefense(genIndividual,listsimple,"D1")
+	testchangeDefense(genIndividual,simpleobject,"D2")
+	for i in range(1000):
+		randomparameter = random.randint(0,100)	
+		randomDefense = random.randint(-1000,1000)
+		randomDefense2 = random.randint(-1000,100)
+		genIndividual = Individual(wordgen,randomparameter,randomparameter,randomparameter)
+		testchangeDefense(genIndividual,randomDefense,('testchangeDefense: '+str(i)))
+		testchangeDefense(genIndividual,randomDefense2,('testchangeDefense1:'+str(i)))
+		testchangeDefense(genIndividual,str(randomDefense),('testchangeDefenses:'+str(i)))
+		testchangeDefense(genIndividual,str(randomDefense2),('testchangeDefensess:'+str(i)))
+	#testgetdamage
+	genIndividual = Individual(wordgen,100,100,100)
+	testgetdamage(genIndividual,listsimple,"OS1")
+	testgetdamage(genIndividual,simpleobject,"OS2")
+	testgetdamage(genIndividual,"Norad","OS3")
+	testgetdamage(genIndividual,"-1000","OS4")
 	
+	#exit()
+	for i in range(1000):
+		randomparameter = random.randint(1,100)	
+		randomdamagevalue = random.randint(-1000,1000)
+		genIndividual = Individual(wordgen,randomparameter,randomparameter,randomparameter)
+		testgetdamage(genIndividual,randomdamagevalue,('testgetdamage: '+str(i)))
+		testgetdamage(genIndividual,str(randomdamagevalue),('testgetdamages:'+str(i)))
+		
