@@ -120,7 +120,7 @@ class Individual(object):
 		else:
 			self.health = health
 
-	def _changeAttackOrDefense(self,newvalue,option):
+	def __changeAttackOrDefense(self,newvalue,option):
 		"""
 		it's change the attribute attack or defense by other number, when the player want exchange the weapon
 		or the defense
@@ -136,7 +136,7 @@ class Individual(object):
 		if(type(newvalue) is int):
 			newnumb = newvalue
 			if(newnumb > 100):
-					newnumb = 100
+				newnumb = 100
 
 			if(newnumb < 0):
 				newnumb = 0
@@ -278,7 +278,7 @@ class Individual(object):
 		@return oldavalue :(int or tuple) integer that represent the old capacity of attack,
 		or None plus a message of error
 		"""
-		return _changeAttackOrDefense(newAttack,1)	
+		return self.__changeAttackOrDefense(newAttack,1)	
 	
 	def changeDefense(self,newDefense):
 		"""
@@ -290,7 +290,7 @@ class Individual(object):
 		@return oldavalue :(int or tuple) integer that represent the old capacity of defense,
 		or None plus a message of error
 		"""
-		return _changeAttackOrDefense(newDefense,2)	
+		return self.__changeAttackOrDefense(newDefense,2)	
 		
 
 	def getDamage(self, valuehit):
@@ -302,57 +302,44 @@ class Individual(object):
 
 		@return int: 1 is value hit was correcty repass , 0 if is not.
 		"""
-		if(type(valuehit) is int):
+		if(type(valuehit) is str or type(valuehit) is int):
 			newnumb = valuehit
-			if(newnumb > 100):
-				newnumb = 100
+			if(type(valuehit) is str):
+				try:
+					newnumb = int(valuehit)
+				except ValueError:
+					answer = 0
+					return answer
+				
+		
+			if(newnumb > 200):
+				newnumb = 200
 
-			if(newnumb < 0):
+			if(newnumb < 0): # no hit
 				newnumb = 0
+				return 1
+
 			defenseBackup = self.getDefense()
 			healthbackup = self.getHealth()
-			defensevalue = valuehit - defenseBackup
-			if(defensevalue > 0): # no more defense
-				if(defensevalue> self.getHealth()):
-					self.__del()
-					return 1
-				else:
-					self.__setDefense(0)
-					newvaluehealth = healthbackup - defensevalue
-					self.__setHealth(newvaluehealth)
+			defensevalue = newnumb - defenseBackup
+			totaldefenseandhealth = defenseBackup + healthbackup
+			if(totaldefenseandhealth <= valuehit): #death
+				self.__del__()
+				return 1
+			
+			if(defensevalue < 0):
+				self.__setDefense(defenseBackup - newnumb)
+				return 1
+			if(defensevalue > 0):
+				if(defensevalue >= healthbackup): # death
+					self.__del__()
 					return 1 
-			else:
-				newvaluedefense = defensevalue * -1
-				self.__setDefense(newvaluedefense)
 
-
-		if(type(valuehit) is str):
-			try:
-				newnumb = int(valuehit)
-			except ValueError:
-				answer = 0
-			else:
-				newnumb = valuehit
-				if(newnumb > 100):
-					newnumb = 100
-
-				if(newnumb < 0):
-					newnumb = 0
-				defenseBackup = self.getDefense()
-				healthbackup = self.getHealth()
-				defensevalue = valuehit - defenseBackup
-				if(defensevalue > 0): # no more defense
-					if(defensevalue> self.getHealth()):
-						self.__del()
-						return 1
-					else:
-						self.__setDefense(0)
-						newvaluehealth = healthbackup - defensevalue
-						self.__setHealth(newvaluehealth)
-						return 1 
-				else:
-					newvaluedefense = defensevalue * -1
-					self.__setDefense(newvaluedefense)
+				else: # keep live without defense
+					newdefinitionattributehealth = healthbackup - defensevalue
+					self.__setDefense(0)
+					self.__setHealth(newdefinitionattributehealth)
+					return 1 
 
 
 		else:
