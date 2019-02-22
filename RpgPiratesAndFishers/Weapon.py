@@ -65,4 +65,4 @@ class Weapon(Item):
 		"""
 		return (super().setParameters(self.getAttack(),0,0))
 		
-	#	return "\n#########################################################\n"+"\nItem of Attack, Name of item:"+self.getName()+"\nCapacity of attack:"+str(self.getAttack())+"\nCapacity de defense:0 \n Capacity of heal:0 \n"+"#########################################################\n"		
+		
