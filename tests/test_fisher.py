@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from Fisher import *
-
+import random
 import hashlib
 from Item import Item
 from Spell import Spell
@@ -84,18 +84,21 @@ def test_ParametersofFisher(fisherobj,objattack,objdefense,objisland,objectidpla
 		except AssertionError:
 			print("\033[91mError, the object Weapon don't was insert correcly,Case Study:",CaseStudy)
 			exit()
+	
 	if(resultobjweapon == 0):
 		try:
 			assert(fisherobj.getWeapon() == None)
 		except AssertionError:
 			print("\033[91mError,Was inserted an object type weapon incorrecly, Case Study: ", CaseStudy)
 			exit()
+	
 	if(resultobjdefense == 1):
 		try:
 			assert(fisherobj.getDefense() == objdefense)
 		except AssertionError:
 			print("\033[91mError, the object Defense don't was insert correcly,Case Study:",CaseStudy)
 			exit()
+	
 	if(resultobjdefense == 0):
 		try:
 			assert(fisherobj.getDefense() == None)
@@ -109,24 +112,28 @@ def test_ParametersofFisher(fisherobj,objattack,objdefense,objisland,objectidpla
 		except AssertionError:
 			print("\033[91mError, the object Island don't was insert correcly,Case Study:",CaseStudy)
 			exit()
+	
 	if(resultobjisland == 0):
 		try:
 			assert(fisherobj.getactualIsland() == None)
 		except AssertionError:
 			print("\033[91mError,Was inserted an object type Island incorrecly, Case Study: ", CaseStudy)
 			exit()
+	
 	if(resultidplayerhash == 1):
 		try:
 			assert(fisherobj.getIdplayer() == objectidplayer)
 		except AssertionError:
 			print("\033[91mError, the object Hash sha256 don't was insert correcly,Case Study:",CaseStudy)
 			exit()
+	
 	if(resultidplayerhash == 0):
 		try:
 			assert(type(fisherobj.getIdplayer()) == str and len(fisherobj.getIdplayer()) == 64)
 		except AssertionError:
 			print("\033[91mError,Was inserted an object type Hash sha256 incorrecly, Case Study: ", CaseStudy)
 			exit()
+	
 	if(True):
 		print("\033[92mTest was sucessfull, case Study: "+str(CaseStudy))		
 
@@ -158,7 +165,44 @@ if __name__ == "__main__":
 	test_ParametersofFisher(fisherobj,randomlist,randomlist,randomlist,randomlist,"Forcing_Parameters 2")	
 	fisherobj = Fisher(randomlist2,randomlist2,randomlist2,randomlist2,randomlist2,randomlist2)
 	test_ParametersofFisher(fisherobj,randomlist2,randomlist2,randomlist2,randomlist2,"Forcing_Parameters 3")	
-	
-#	for i in range(1000):
-#		fisherobj = Fisher("simplefisher",100,espadacurta,cotademalha,island1,keygen)
-#		test_ParametersofFisher(fisherobj,espadacurta,cotademalha,island1,keygen,"Obj 1")	
+	# test insert parameters , right and wrong. exhaustion test
+	for i in range(1000):
+		weapondecide = random.randint(0,2)
+		if(weapondecide==2):
+			randomweapon  = Defense("genrandom",0,0)
+		if(weapondecide==1):
+			randomweapon  = Weapon("randomweapon",100,100)
+		if(weapondecide==0):
+			randomweapon  = None
+
+		defensedecide = random.randint(0,2)
+		if(defensedecide==2):
+			randomdefense  = Weapon("genrandom",0,0)
+		if(defensedecide==1):
+			randomdefense  = Defense("randomdefense",100,100)
+		if(defensedecide==0):
+			randomdefense  = None		
+		
+		islanddecide = random.randint(0,2)
+		if(islanddecide==2):
+			randomisland  = Weapon("genrandom",0,0)
+		if(islanddecide==1):
+			randomisland  = Island("randomisland")
+		if(islanddecide==0):
+			randomisland  = None
+		
+		hashsimple = hashlib.sha256()
+		simplekey = bytes("Key","latin-1")
+		hashsimple.update(simplekey)
+		#keygen = hashsimple.hexdigest()
+		keygendecide = random.randint(0,1)
+		if(keygendecide==2):
+			keygen  = Weapon("genrandom",0,0)
+		if(keygendecide==1):
+			keygen = hashsimple.hexdigest()
+		if(keygendecide==0):
+			keygen  = None
+
+		fisherobj = Fisher("simplefisher",100,randomweapon,randomdefense,randomisland,keygen)
+		# the name and health was not tested because is inherited da class Individual
+		test_ParametersofFisher(fisherobj,randomweapon,randomdefense,randomisland,keygen,"exhaustion: "+str(i))	
