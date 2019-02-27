@@ -106,11 +106,10 @@ class Item(object):
 		
 		@return : none
 		"""
-		self.capacityAttack= attack
+		self.capacityAttack  = attack
 		self.capacityDefense = defense
 		self.capacityhealing = healing
-		
-		return  "\n#########################################################\n"+"\n Item , Name of item:"+self.getName()+"\nCapacidade of healing of Item: "+str(self.capacityhealing) +"\nCapacidade of attack of Item: "+str(self.capacityAttack) + "\nCapacidade of defense of Item: "+str(self.capacityDefense)+ "\n#########################################################\n"
+		return  "\n#########################################################\n"+"\n Item , Name of item:" + self.getName() + "\n Capacidade of healing of Item: "+str(self.capacityhealing) +"\nCapacidade of attack of Item: "+str(self.capacityAttack) + "\nCapacidade of defense of Item: "+str(self.capacityDefense)+ "\n#########################################################\n"
 		
 	@abstractmethod	
 	def getDetail(self):
