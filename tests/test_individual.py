@@ -87,14 +87,14 @@ def testDefense(individual,parameter,caseStudy):
 	if(type(parameter) is int):
 		if(parameter>=0 and parameter<=100):
 			try:
-				assert(individual.getDefense()==parameter)
+				assert(individual.getValueDefense()==parameter)
 			except AssertionError:
 				print(" \033[91m Error, the parameter defense was generate anomalously, study case: "+str(caseStudy))
 			else:
 				print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 		else:
 			try:
-				assert(individual.getDefense()>=0 and individual.getDefense()<=100)
+				assert(individual.getValueDefense()>=0 and individual.getValueDefense()<=100)
 			except AssertionError:
 				print("\033[91m Error, the parameter defense is outside of range, study case: "+str(caseStudy))
 			else:
@@ -105,7 +105,7 @@ def testDefense(individual,parameter,caseStudy):
 			newparameter = int(parameter)
 		except (TypeError,ValueError) as e:
 			try:
-				assert(individual.getDefense()>=0 and individual.getDefense()<=100)
+				assert(individual.getValueDefense()>=0 and individual.getValueDefense()<=100)
 			except AssertionError:
 				print("\033[91m Error, the parameter defense is outside of range, study case: "+str(caseStudy))
 			else:
@@ -113,21 +113,21 @@ def testDefense(individual,parameter,caseStudy):
 		else:
 			if(newparameter>=0 and newparameter<=100):
 				try:
-					assert(individual.getDefense()==newparameter)
+					assert(individual.getValueDefense()==newparameter)
 				except AssertionError:
 					print(" \033[91m Error, the parameter defense was generate anomalously, study case: "+str(caseStudy))
 				else:
 					print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 			else:
 				try:
-					assert(individual.getDefense()>=0 and individual.getDefense()<=100)
+					assert(individual.getValueDefense()>=0 and individual.getValueDefense()<=100)
 				except AssertionError:
 					print(" \033[91m Error, the parameter defense is outside of range, study case: "+str(caseStudy))
 				else:
 					print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 	else:
 		try:
-			assert(individual.getDefense()>=0 and individual.getDefense()<=100)
+			assert(individual.getValueDefense()>=0 and individual.getValueDefense()<=100)
 		except AssertionError:
 			print(" \033[91m Error, the parameter defense is outside of range, study case: "+str(caseStudy))
 		else:
@@ -137,14 +137,14 @@ def testAttack(individual,parameter,caseStudy):
 	if(type(parameter) is int):
 		if(parameter>=0 and parameter<=100):
 			try:
-				assert(individual.getAttack()==parameter)
+				assert(individual.getValueAttack()==parameter)
 			except AssertionError:
 				print("\033[91m Error, the parameter attack was generate anomalously, study case: "+str(caseStudy))
 			else:
 				print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 		else:
 			try:
-				assert(individual.getAttack()>=0 and individual.getAttack()<=100)
+				assert(individual.getValueAttack()>=0 and individual.getValueAttack()<=100)
 			except AssertionError:
 				print("\033[91m Error, the parameter attack is outside of range, study case: "+str(caseStudy))
 			else:
@@ -154,7 +154,7 @@ def testAttack(individual,parameter,caseStudy):
 			newparameter = int(parameter)
 		except (TypeError,ValueError) as e:
 			try:
-				assert(individual.getAttack()>=0 and individual.getAttack()<=100)
+				assert(individual.getValueAttack()>=0 and individual.getValueAttack()<=100)
 			except AssertionError:
 				print("\033[91m Error, the parameter attack is outside of range, study case: "+str(caseStudy))
 			else:
@@ -162,21 +162,21 @@ def testAttack(individual,parameter,caseStudy):
 		else:
 			if(newparameter>=0 and newparameter<=100):
 				try:
-					assert(individual.getAttack()==newparameter)
+					assert(individual.getValueAttack()==newparameter)
 				except AssertionError:
 					print(" \033[91m Error, the parameter attack was generate anomalously, study case: "+str(caseStudy))
 				else:
 					print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 			else:
 				try:
-					assert(individual.getAttack()>=0 and individual.getAttack()<=100)
+					assert(individual.getValueAttack()>=0 and individual.getValueAttack()<=100)
 				except AssertionError:
 					print(" \033[91m Error, the parameter attack is outside of range, study case: "+str(caseStudy))
 				else:
 					print("Test sucessfull, caseStudy:"+str(caseStudy)+"\n")
 	else:
 		try:
-			assert(individual.getAttack()>=0 and individual.getAttack()<=100)
+			assert(individual.getValueAttack()>=0 and individual.getValueAttack()<=100)
 		except AssertionError:
 			print("\033[91m Error, the parameter attack is outside of range, study case: "+str(caseStudy))
 		else:
@@ -294,30 +294,30 @@ def testusignMedkit(individual,intmedkit,caseStudy):
 def testchangeAttack(individual,newattack,caseStudy):
 	#individual.changeAttack((int) newattackvalue) --> function
 	if(type(newattack) is int):
-		oldvalueattack = individual.getAttack()
+		oldvalueattack = individual.getValueAttack()
 		resultfunc = individual.changeAttack(newattack)
 		if(newattack > 100):
 			try:
-				assert((resultfunc == oldvalueattack) and (individual.getAttack() == 100))
+				assert((resultfunc == oldvalueattack) and (individual.getValueAttack() == 100))
 			except AssertionError:
-				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getAttack())+'\n')
+				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getValueAttack())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 
 		elif(newattack < 0):
 			try:
-				assert((resultfunc == oldvalueattack) and (individual.getAttack() == 0))
+				assert((resultfunc == oldvalueattack) and (individual.getValueAttack() == 0))
 			except AssertionError:
-				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getAttack())+'\n')
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getValueAttack())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 		else:
 			try:
-				assert((resultfunc == oldvalueattack) and (individual.getAttack() == newattack))
+				assert((resultfunc == oldvalueattack) and (individual.getValueAttack() == newattack))
 			except AssertionError:
-				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newattack)+ " ,Is: "+str(individual.getAttack())+'\n')
+				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newattack)+ " ,Is: "+str(individual.getValueAttack())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -335,13 +335,13 @@ def testchangeAttack(individual,newattack,caseStudy):
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 		else:
-			oldvalueattack = individual.getAttack()
+			oldvalueattack = individual.getValueAttack()
 			if(newnumb > 100):
 				try:
 					resultfunc = individual.changeAttack(newnumb)
-					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 100))
+					assert((resultfunc == oldvalueattack ) and (individual.getValueAttack() == 100))
 				except AssertionError:
-					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getDefense())+'\n')
+					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -349,27 +349,27 @@ def testchangeAttack(individual,newattack,caseStudy):
 			elif(newnumb < 0):
 				try:
 					resultfunc = individual.changeAttack(newnumb)
-					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == 0))
+					assert((resultfunc == oldvalueattack ) and (individual.getValueAttack() == 0))
 				except AssertionError:
-					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvalueattack)+ " ,Is: "+str(individual.getAttack())+'\n')
+					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvalueattack)+ " ,Is: "+str(individual.getValueAttack())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: " +str(caseStudy)+'\n')
 			else:
 				try:
 					resultfunc = individual.changeAttack(newnumb)
-					assert((resultfunc == oldvalueattack ) and (individual.getAttack() == newnumb))
+					assert((resultfunc == oldvalueattack ) and (individual.getValueAttack() == newnumb))
 				except AssertionError:
-					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getAttack())+'\n')
+					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getValueAttack())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
 
 	else:
-		oldvalueattack = individual.getAttack()
+		oldvalueattack = individual.getValueAttack()
 		try:
 			resultfunc = individual.changeAttack(newattack)
-			assert((individual.getAttack()==oldvalueattack) and (not(individual.getAttack() == newattack)) and(resultfunc[0] == None))
+			assert((individual.getValueAttack()==oldvalueattack) and (not(individual.getValueAttack() == newattack)) and(resultfunc[0] == None))
 		except AssertionError:
 			print("\033[91m Error, anomalously sum tho the attribute attack, Case study: ",caseStudy,"\n")
 			exit()
@@ -381,30 +381,30 @@ def testchangeAttack(individual,newattack,caseStudy):
 def testchangeDefense(individual,newdefense,caseStudy):
 	#individual.changeDefense((int) newdefense(value) --> function
 	if(type(newdefense) is int):
-		oldvaluedefense = individual.getDefense()
+		oldvaluedefense = individual.getValueDefense()
 		resultfunc = individual.changeDefense(newdefense)
 		if(newdefense > 100):
 			try:
-				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == 100))
+				assert((resultfunc == oldvaluedefense) and (individual.getValueDefense() == 100))
 			except AssertionError:
-				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getDefense())+'\n')
+				print("\033[91m  Error, value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is:"+str(individual.getValueDefense())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 
 		elif(newdefense < 0):
 			try:
-				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == 0))
+				assert((resultfunc == oldvaluedefense) and (individual.getValueDefense() == 0))
 			except AssertionError:
-				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getDefense())+'\n')
+				print("\033[91m Error , value added lower than it should, study case: "+str(caseStudy)+" Should be : " +str(resultfunc)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 		else:
 			try:
-				assert((resultfunc == oldvaluedefense) and (individual.getDefense() == newdefense))
+				assert((resultfunc == oldvaluedefense) and (individual.getValueDefense() == newdefense))
 			except AssertionError:
-				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newdefense)+ " ,Is: "+str(individual.getDefense())+'\n')
+				print("\033[91m Error , value does  not match the sum : "+str(caseStudy)+" Should be : " +str(newdefense)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 				exit()
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -422,13 +422,13 @@ def testchangeDefense(individual,newdefense,caseStudy):
 			else:
 				print("Test sucessfull: "+str(caseStudy)+'\n')
 		else:
-			oldvaluedefense = individual.getDefense()
+			oldvaluedefense = individual.getValueDefense()
 			if(newnumb > 100):
 				try:
 					resultfunc = individual.changeDefense(newnumb)
-					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == 100))
+					assert((resultfunc == oldvaluedefense ) and (individual.getValueDefense() == 100))
 				except AssertionError:
-					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getDefense())+'\n')
+					print("\033[91m Error , value added exceeds the limit, study case: "+str(caseStudy)+" Should be : " +str(100)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
@@ -436,27 +436,27 @@ def testchangeDefense(individual,newdefense,caseStudy):
 			elif(newnumb < 0):
 				try:
 					resultfunc = individual.changeDefense(newnumb)
-					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == 0))
+					assert((resultfunc == oldvaluedefense ) and (individual.getValueDefense() == 0))
 				except AssertionError:
-					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluedefense)+ " ,Is: "+str(individual.getDefense())+'\n')
+					print("\033[91m Error , value added lower than it should, study case: ",int(caseStudy)+" Should be : "+str(oldvaluedefense)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: " +str(caseStudy)+'\n')
 			else:
 				try:
 					resultfunc = individual.changeDefense(newnumb)
-					assert((resultfunc == oldvaluedefense ) and (individual.getDefense() == newnumb))
+					assert((resultfunc == oldvaluedefense ) and (individual.getValueDefense() == newnumb))
 				except AssertionError:
-					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getDefense())+'\n')
+					print("\033[91m Error , value does  not match the sum : ",int(caseStudy)+" Should be : " +str(pretendvalue)+ " ,Is: "+str(individual.getValueDefense())+'\n')
 					exit()
 				else:
 					print("Test sucessfull: "+str(caseStudy)+'\n')
 
 	else:
-		oldvaluedefense = individual.getDefense()
+		oldvaluedefense = individual.getValueDefense()
 		try:
 			resultfunc = individual.changeDefense(newdefense)
-			assert((individual.getDefense()==oldvaluedefense) and (not(individual.getDefense() == newdefense)) and(resultfunc[0] == None))
+			assert((individual.getValueDefense()==oldvaluedefense) and (not(individual.getValueDefense() == newdefense)) and(resultfunc[0] == None))
 		except AssertionError:
 			print("\033[91m Error, anomalously sum tho the attribute defense, Case study: ",caseStudy,"\n")
 			exit()
@@ -474,10 +474,10 @@ def testgetdamage(individual,causeDamage,caseStudy):
 				newnumb = int(causeDamage)
 			except ValueError:
 				backuphealth  = individual.getHealth()
-				backupdefense = individual.getDefense()
+				backupdefense = individual.getValueDefense()
 				result = individual.getDamage(causeDamage)
 				try:
-					assert(result == 0 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+					assert(result == 0 and backupdefense == individual.getValueDefense() and backuphealth  == individual.getHealth())
 				except AssertionError:
 					print("Error, anomalously, not possible convert str object, subtracted from health ou defense, case study: "+str(caseStudy))
 					return 0
@@ -486,41 +486,41 @@ def testgetdamage(individual,causeDamage,caseStudy):
 					return 0
 
 			if(newnumb > 0):
-				if(newnumb <= individual.getDefense()):
-					valueexceedofdefense = individual.getDefense() - newnumb
+				if(newnumb <= individual.getValueDefense()):
+					valueexceedofdefense = individual.getValueDefense() - newnumb
 					backuphealth = individual.getHealth()
 					try:
 						result = individual.getDamage(newnumb)
-						assert(result == 1 and backuphealth == individual.getHealth() and valueexceedofdefense == individual.getDefense())
+						assert(result == 1 and backuphealth == individual.getHealth() and valueexceedofdefense == individual.getValueDefense())
 					except AssertionError:
-						print("Error , that was necessary this value for defense: "+str(valueexceedofdefense)+"but function returns : "+str(individual.getDefense())+"case study: "+str(caseStudy))
+						print("Error , that was necessary this value for defense: "+str(valueexceedofdefense)+"but function returns : "+str(individual.getValueDefense())+"case study: "+str(caseStudy))
 					else:
 						print("Test sucessfull, case study: "+str(caseStudy))
 				else:
 					backuphealth = individual.getHealth()
-					backupdefense = individual.getDefense()
+					backupdefense = individual.getValueDefense()
 					result = individual.getDamage(newnumb)
 					valueexceedofdefense = newnumb - backupdefense 
 					if(valueexceedofdefense >= backuphealth): # death
 						try:
-							assert(individual.getHealth() == None and individual.getDefense()==None and individual.getAttack() == None and result == 1)
+							assert(individual.getHealth() == None and individual.getValueDefense()==None and individual.getValueAttack() == None and result == 1)
 						except AssertionError:
 							print("Error, (case when defense and health exist )this object should that be destroyed, study case: "+str(caseStudy))
 						else:
 							print("Test sucessfull, Study case: "+str(caseStudy))
 					else:	#alive
 						try:
-							assert(individual.getDefense() == 0 and individual.getHealth() == (backuphealth - valueexceedofdefense) and result == 1)
+							assert(individual.getValueDefense() == 0 and individual.getHealth() == (backuphealth - valueexceedofdefense) and result == 1)
 						except AssertionError:
 							print("Error, (case when defense was gone and there is just health),health should be: "+str((backuphealth - valueexceedofdefense))+" it is: "+str(individual.getHealth())+" Case study: "+str(caseStudy))
 						else:
 							print("Test sucessfull, Study case: "+str(caseStudy))	
 			else:
 				backuphealth  = individual.getHealth()
-				backupdefense = individual.getDefense()
+				backupdefense = individual.getValueDefense()
 				result = individual.getDamage(newnumb)
 				try:
-					assert(result == 1 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+					assert(result == 1 and backupdefense == individual.getValueDefense() and backuphealth  == individual.getHealth())
 				except AssertionError:
 					print("Error, (Case numb less than zero ), anomalously subtracted from health ou defense, case study: "+str(caseStudy))
 					return 0
@@ -531,11 +531,11 @@ def testgetdamage(individual,causeDamage,caseStudy):
 		
 	else:
 		backuphealth  = individual.getHealth()
-		backupdefense = individual.getDefense()
+		backupdefense = individual.getValueDefense()
 		result = individual.getDamage(causeDamage)
 		
 		try:
-			assert(result == 0 and backupdefense == individual.getDefense() and backuphealth  == individual.getHealth())
+			assert(result == 0 and backupdefense == individual.getValueDefense() and backuphealth  == individual.getHealth())
 		except AssertionError:
 			print("Error, (object is not a str or int)anomalously subtracted from health ou defense, case study: "+str(caseStudy))
 		else:

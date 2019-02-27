@@ -24,6 +24,7 @@ class Individual(object):
 
 		@return : None
 		"""
+
 		self.name = assertIfIsWeelFormat(name)
 		self.health = makeSureThatIsnumberLimited(health,100) 
 		self.attack = makeSureThatIsnumberLimited(attack,100)
@@ -54,7 +55,6 @@ class Individual(object):
 		"""
 		return self.name
 
-
 	def getHealth(self):
 		"""
 		it's return an attribute of the class that represent the health of the individual in the game
@@ -66,7 +66,7 @@ class Individual(object):
 
 		return self.health
 
-	def getDefense(self):	
+	def getValueDefense(self):	
 		"""
 		it's return an attribute of the class that represent the defense of the individual in the game
 
@@ -76,7 +76,7 @@ class Individual(object):
 		"""
 		return self.defense
 
-	def getAttack(self):
+	def getValueAttack(self):
 		"""
 		it's return an attribute of the class that represent the attack of the individual in the game
 
@@ -146,12 +146,12 @@ class Individual(object):
 				if(option >=1 and option <= 2):
 					
 					if(option == 1):
-						answer = self.getAttack()
+						answer = self.getValueAttack()
 						self.__setAttack(newnumb) # change the values
 						return answer
 
 					else:
-						answer = self.getDefense()
+						answer = self.getValueDefense()
 						self.__setDefense(newnumb) # change the values
 						return answer
 
@@ -183,12 +183,12 @@ class Individual(object):
 					if(option >=1 and option <= 2):
 						
 						if(option == 1):
-							answer = self.getAttack()
+							answer = self.getValueAttack()
 							self.__setAttack(newnumb) # change the values
 							return answer
 
 						else:
-							answer = self.getDefense()
+							answer = self.getValueDefense()
 							self.__setDefense(newnumb) # change the values
 							return answer
 
@@ -319,7 +319,7 @@ class Individual(object):
 				newnumb = 0
 				return 1
 
-			defenseBackup = self.getDefense()
+			defenseBackup = self.getValueDefense()
 			healthbackup = self.getHealth()
 			defensevalue = newnumb - defenseBackup
 			totaldefenseandhealth = defenseBackup + healthbackup
@@ -356,4 +356,5 @@ class Individual(object):
 
 		"""
 
-		resposta += "\n #########################################################\n "+"Name of individual :" + self.getName() + "\n Health of individual:" + str(self.getHealth())+"\nAttack of individual:"+str(self.getAttack())+"\nDefense of individual:"+str(self.getDefense())+"\n#########################################################\n"
+		resposta = "\n#########################################################\n"+"Name of individual :" + self.getName() + "\n Health of individual:" + str(self.getHealth())+"\nAttack of individual:"+str(self.getValueAttack())+"\nDefense of individual:"+str(self.getValueDefense())+"\n#########################################################\n"
+		return resposta
