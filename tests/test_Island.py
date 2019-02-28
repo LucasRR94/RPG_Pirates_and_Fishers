@@ -44,6 +44,36 @@ def test_addItem(islandobj,refereitem,caseStudy):
 			else:
 				print("Error, was inserted an strange object in vector, case study:",caseStudy)	
 				exit()
+
+def test_getItem(islandobj,nameofitem,refereitem,caseStudy):
+	if(isinstance(refereitem,Item)):
+		try:
+			result = islandobj.getItem(nameofitem) 
+			assert(result==refereitem)
+		except AssertionError:
+			print("\033[91mError, o item don't was present on the list, caseStudy",caseStudy)
+		else:
+			try:
+				assert(islandobj.itemisland.index(refereitem)>=0)
+			except (ValueError,AssertionError) as e:
+				print("Test sucessful,case study:",caseStudy)
+			else:
+				print("\033[91mError,the element keeped on the list, case study:",caseStudy)
+
+	else:
+		try:
+			assert(islandobj.getItem(nameofitem)==None)
+		except AssertionError:
+			print("\033[91mError, the item was inserted incorrecly, case study:",caseStudy)
+		else:
+			try:
+				assert(islandobj.itemisland.index(refereitem)>=0)
+			except (AssertionError,ValueError) as e :
+				print("Test sucessful, study case:", caseStudy)				
+			else:
+				print("\033[91mError, and the strange obj was found on the list,case study:",caseStudy)					
+		
+
 def gerandoItem(numb):
 	'''
 	Return a number of items and their names, that was generated
@@ -79,10 +109,16 @@ def gerandoItem(numb):
 			items.append(gendefense)
 	
 	return resp
+
 if __name__ == "__main__":
 	islabonita = Island("Isla Bonita")
 	resp = gerandoItem(1000)
 	itemsgerados = resp[0]
-
+	l = []
 	for i in range(1000):
 		test_addItem(islabonita,itemsgerados[i],i)
+	print("\n\033[92m###Test Get###")	
+	for i in range(1000):
+		test_getItem(islabonita,itemsgerados[i].getName(),itemsgerados[i],i)	
+	test_getItem(islabonita,"Welfer",1,"not in island 1")
+	test_getItem(islabonita,"Floyd",l,"not in island 2")	
