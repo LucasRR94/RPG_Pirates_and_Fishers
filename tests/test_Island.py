@@ -73,7 +73,23 @@ def test_getItem(islandobj,nameofitem,refereitem,caseStudy):
 			else:
 				print("\033[91mError, and the strange obj was found on the list,case study:",caseStudy)					
 		
-
+def test_listItem(islandobj,refereitem,caseStudy):
+	if(isinstance(refereitem,Item)):
+		try:
+			detailsfromitems = islandobj.getListItems()
+			assert(findindetailsname(detailsfromitems,refereitem.getName())==1)
+		except AssertionError:
+			print("\033[91mError, not was found the item inside of the list, case study:", caseStudy)
+		else:
+			print("Test sucessful, case study:",caseStudy)
+	else:
+		try:
+			detailsfromitems = islandobj.getListItems()
+			assert(findindetailsname(detailsfromitems,refereitem.getName())==0)
+		except AssertionError:
+			print("Test sucessful, case study:",caseStudy)
+		else:
+			print("\033[91mError, not was found the item inside of the list, case study:", caseStudy)
 def gerandoItem(numb):
 	'''
 	Return a number of items and their names, that was generated
@@ -110,6 +126,20 @@ def gerandoItem(numb):
 	
 	return resp
 
+def findindetailsname(listdetails,nameofitem):
+
+	if(type(listdetails) is list):
+		if(len(listdetails)==0):
+			return 0
+		else:
+			tam = len(listdetails)
+			for i in range(tam):
+				position = listdetails[i].find(nameofitem)
+				if(position!=-1):
+					return 1
+			return 0
+	else:
+		return 0 
 if __name__ == "__main__":
 	islabonita = Island("Isla Bonita")
 	resp = gerandoItem(1000)
@@ -117,6 +147,11 @@ if __name__ == "__main__":
 	l = []
 	for i in range(1000):
 		test_addItem(islabonita,itemsgerados[i],i)
+	print("\n\033[92m###Test list###")	
+	for i in range(1000):
+		test_listItem(islabonita,itemsgerados[i],i)	
+
+
 	print("\n\033[92m###Test Get###")	
 	for i in range(1000):
 		test_getItem(islabonita,itemsgerados[i].getName(),itemsgerados[i],i)	
