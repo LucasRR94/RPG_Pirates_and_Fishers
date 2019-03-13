@@ -272,6 +272,7 @@ class Individual(object):
 		"""
 		it's change the attribute attack,calling the methodchangeAttackOrDefense with the appropriated 
 		parameters
+		
 
 		@param newattack:(int)  a integer between 0..100, that will replace the attribute
 
