@@ -209,6 +209,7 @@ def checkUseItem(fisherobj,itemusing,refereitem,caseStudy):
 						assert(fisherobj.useItemBackpack(itemusing)==1)
 					except AssertionError:
 						print("Error the new weapon, don't was insert correcly, case of study:\n",caseStudy)
+						exit()
 					else:
 						try:
 							assert(fisherobj.itemattack == refereitem)
@@ -223,7 +224,7 @@ def checkUseItem(fisherobj,itemusing,refereitem,caseStudy):
 								return 1
 							else:
 								print("Error, the item continue on the back pack, case study:\n",caseStudy)
-
+								exit()
 
 			if(type(refereitem) is Defense):	
 				actualdefense = fisherobj.getDefense()
@@ -253,6 +254,7 @@ def checkUseItem(fisherobj,itemusing,refereitem,caseStudy):
 						assert(fisherobj.useItemBackpack(itemusing)==1)
 					except AssertionError:
 						print("Error the new defense, don't was insert correcly, case of study:\n",caseStudy)
+						exit()
 					else:
 						try:
 							assert(fisherobj.itemdefense == refereitem)
@@ -267,8 +269,8 @@ def checkUseItem(fisherobj,itemusing,refereitem,caseStudy):
 								return 1
 							else:
 								print("Error, the item defense continue on the back pack, case study:\n",caseStudy)
+								exit()
 			else:
-				print()
 				print("Happened an error, case study:",caseStudy)
 				exit()					
 
@@ -276,8 +278,10 @@ def checkUseItem(fisherobj,itemusing,refereitem,caseStudy):
 
 		try:
 			assert(fisherobj.backpack.index(refereitem)>=0)
+		
 		except ValueError:
 			print("Test sucessfull, case study:", caseStudy)
+			
 		else:
 			print("Error, object of unknown type is present list of back pack, study case:\n", caseStudy)	
 			exit()	
@@ -299,11 +303,13 @@ def checkaddItem(fisherobj,iteminsert,caseStudy):
 				assert(fisherobj.addItemBackpack(iteminsert)==1)
 			except AssertionError:
 				print("Error, not be inserted on de backpack, case study:\n",caseStudy)
+				exit()
 			else:
 				try:
 					assert(fisherobj.backpack.index(iteminsert)>=0)
 				except (AssertionError,ValueError) as e:
 					print("Error, instability on backpack, object not found, case study:\n",CaseStudy)
+					exit()
 				else:
 					print("Test sucessfull, case study:\n",caseStudy)
 		
@@ -312,10 +318,12 @@ def checkaddItem(fisherobj,iteminsert,caseStudy):
 				assert(fisherobj.addItemBackpack(iteminsert)==0)
 			except AssertionError:
 				print("Error, an object that is not an item was insert incorrecly, case Study:\n",CaseStudy)	
+				exit()
 			else:
 				print("Test sucessfull, case study:\n",caseStudy)
 	else:
 		print("Error the element was previous on the backpack, case study: \n"+str(caseStudy))
+		exit()
 
 def gerandoItem(numb):
 	'''
@@ -352,6 +360,31 @@ def gerandoItem(numb):
 			items.append(gendefense)
 	
 	return resp
+def test_colectandlisItemsIsland(objFisher,itempassed,caseStudy):
+	"""
+	This function test if the item passed to the island could be collected on the fisher
+	@param objFisher : (Fisher) object type fish
+	@param itempassed : (Item) is an item passed to the island that can be colected through the fisher
+	@param caseStudy : (int) simple numb that represent the actual example
+	@return:(None)
+	"""
+	vectorwithallitems = objFisher.listItemsfromIsland()
+	
+	try:
+		assert(vectorwithallitems[0].find(itempassed.getName())>=0)
+	except AssertionError:
+		print("Error, item it is not on the island, case study:",caseStudy)
+		exit()
+	else:
+		try:
+			objFisher.collectItem(itempassed.getName())
+			newvector = objFisher.listItemBackpack()
+			assert(newvector[caseStudy].find(itempassed.getName())>0)
+		except AssertionError:
+			print("Error, the item was not currectly passed by Fisher,case study:",caseStudy)
+			exit()
+		else:
+			print("Test sucessfull, case Study:",caseStudy)
 
 def testingAddListUseItem(numb):
 	'''
@@ -374,6 +407,216 @@ def testingAddListUseItem(numb):
 	print("\n\033[92m##### Use test####\n")	
 	for j in range(numb):
 		checkUseItem(simplefisher,vectornameitems[j],vectorofitems[j],j)
+
+def testDropItems(objFisher,listOfItems,caseStudy):
+	"""
+	This method test the DropItems method
+	he received a list of items that be inserted and check if the return of the function is correct
+	@param listOfItems : (array) is an array contains all the Items inserted on the Fisher
+	@param caseStudy: (int) is a reference of the test that is be running
+	@return :(None)
+	"""
+	returnOfDrop = objFisher.dropItems()
+	try:
+		assert(returnOfDrop == listOfItems and objFisher.backpack == None)
+	except AssertionError:
+		print("Error, the backpack have  something, or don't have all the items required, case Study:",caseStudy)
+		exit()
+	else:
+		print("sucessfull test, case study:",caseStudy)	
+
+def test_ColectGetInfoDropSpells(objFisher, spellinserted,studyCase):
+	"""
+	This function test three methods, the collectSpells,the getinfoaboutSpellonIsland, and the dropSpells
+	@param objFisher :(Fisher) an object type Fisher , that have a island avaliable as actual position
+	@param spellinserted:(Spell) that is inserted on the island, that is the actual position of the player
+	@param studyCase : (int) integer that inform the actual study of case
+	"""
+	try:
+		assert(objFisher.getinfoaboutSpellonIsland()==1)
+	except AssertionError:
+		print("Error,The method do not show the spell avaliable, case Study:",studyCase)
+		exit()
+	else:
+		try:
+			assert(objFisher.collectSpell()==1)
+		except AssertionError:
+			print("Error,do not was possible collect the spell from Island, case study:",studyCase)
+			exit()
+		else:
+			try:
+				spellcolect = objFisher.dropSpells()
+				assert(spellcolect.index(spellinserted)>=0 and objFisher.spellcontainer == None)
+			except:
+				print("Error, dropping the spells contained, case Study:",studyCase)
+				exit()
+			else:
+				print("test sucessfull, case study:",studyCase)				
+
+
+def test_getvalueSpells(objFisher,sumprojected,studyCase):
+	"""
+	his function test the method getValueSpells that make accounting of the speels collected, he work	
+	with other function and always move to the right, was described on the function that map the islands.
+	@param objFisher : (Fisher) object of type Fisher
+	@param sumprojected:(int) integer that represent the total of the values of all the spells collected
+	@param studyCase : (integer) informed what the number of the case study
+	@return :(None)
+	"""
+	condition = 0
+	totalsum = 0
+	while(condition == 0):
+		if(objFisher.getinfoaboutSpellonIsland()==1):
+			objFisher.collectSpell()
+			resp = objFisher.getDirectionsfromIsland()
+			if(resp== None): # if is two None , None is not have other (direction)
+				condition = 1
+			else:
+				objFisher.changeIsland("right")
+		else:
+			resp = objFisher.getDirectionsfromIsland()
+			if(resp== None): # if is two None , None is not have other (direction)
+				condition = 1
+			else:
+				objFisher.changeIsland("right")
+
+			
+	totalsum = objFisher.getvalueSpell()
+	try:
+		assert(sumprojected == totalsum)
+	except AssertionError:
+		print(sumprojected,totalsum)
+		print("Error , in the sum of the spells in the Fisher, case study: ",studyCase)
+		exit()
+		return 0
+	else:
+		print("Test sucessfull, case study: ",studyCase)
+		return 0
+		
+def createRandomSpell():
+	"""
+	This function create a random object type Spell
+	@param None:
+	@return :(Spell) returns an Object type spell
+	"""
+	valuespell = random.randint(0,100)
+	randomname = "Spell" + str(random.randint(-10000,10000))
+	newspell = Spell(randomname,valuespell)
+	return newspell
+
+def createIslandAndLinkedThem(numbOfIslands):
+	"""
+	this function create a number of islands :numbOf Islands	
+	And link all them on right direction
+	@param numbOfIslands:(int) number of islands that is generated
+	@return :(island) the first island(the head) of the list
+	"""
+	if(numbOfIslands > 0):
+
+		first = None
+		actual = None
+		nextisland = None 
+		for i in range(numbOfIslands):
+			if(i==0):
+				nameisland = "genericIsland" + str(i)+" "
+				genericIsland = Island(nameisland)
+				first = genericIsland
+				actual = first
+				nextisland = None
+			else:	
+				genericIsland = None
+				nameisland = "genericIsland" + str(i)+" "
+				genericIsland = Island(nameisland)
+				nextisland = genericIsland
+				actual.adddirection(nextisland,"right")
+				actual = nextisland
+				nextisland = None
+
+		return(first)
+	else:
+		return None
+
+def insertedSpellsOnIslandsLink(firstIsland,numbOfIslandslink):
+	"""
+	this function takes a list of Islands  , and add one Spell each island
+	@param firstIslands : (Island) is the head of the list
+	@param numbOfIslandslink:(int) is a number of islands that is present on the list
+	@return :(list) list contains the total sum of value spells and the list of islands created
+ 	"""
+	actual = firstIsland
+	nextisland = None
+	totalsum = 0
+	for i in range(numbOfIslandslink):
+		if(i<numbOfIslandslink-1):
+			numb = random.randint(0,100)
+			randomspell = Spell("random Spell"+str(i),numb)
+			actual.addSpellIsland(randomspell)
+			totalsum += numb
+			nextisland = actual.getdirection("right")
+			actual = nextisland
+		else:
+			numb = random.randint(0,100)
+			randomspell = Spell("random Spell"+str(i),numb)
+			actual.addSpellIsland(randomspell)
+			totalsum += numb
+
+	answer = [totalsum,firstIsland]	
+	return 	answer
+
+def test_ChangeIsland(objFisher,direction,islandCompare,caseStudy):
+	"""
+	This test uses a direction to move to other island and check if is the same islandCompare(Object)
+	and test if the objFisher is in the new islandCompare
+	@param objFisher :(Fisher) object Fisher that will be moved to other island
+	@param direction :(string) string that is used to change the island
+	@param islandCompare :(Island) object that is the destiny for the change of island
+	@param caseStudy:(int) case of study of the test
+	@return None
+	"""
+	try:
+		objFisher.changeIsland(direction)
+		actualIsland = objFisher.getactualIsland()
+		assert(objFisher.getactualIsland() == islandCompare and actualIsland.individualsPresent.index(objFisher) >= 0)
+	
+	except AssertionError:
+		print("Error, the island was not found, the direction is wrong, case Study:",caseStudy)
+	
+	else:
+		print("test sucessfull,case study",caseStudy)
+
+
+def test_getDirectionfromIsland(objFisher,arrayDirections,caseStudy):
+	"""
+	This test uses a arrayDirections(string) that contains all the directions inserted on the actual position 
+	of objFisher, if that array could be found on the directions, the test is sucessfull
+	@param objFisher:(Fisher) a object type Fisher that will be tested
+	@param arrayDirections:(Array) a array that contains strings that will be tested, if they are in the directions listadas da ilha
+	@param caseStudy:(int) case of study of the test
+	@return None
+	"""
+	pass	
+
+
+def test_listenemies(objFisher,arrayenemies,caseStudy):
+	"""
+	this test uses an array (arrayenemies) of strings and comparing with the method ,if
+	all the enemies inserted are show in the method, test sucessfull, otherwise fail
+	@param objFisher: (Fisher) that will be used to give a list that will be compared with the array
+	@param arrayenemies: (array string) array that will be used for comparison 
+	@param caseStudy:(int) case of study of the test
+	@return None
+	"""
+	pass
+
+def test_attackEnemy(objFisher,enemy,caseStudy):
+	"""
+	this test uses an object Fisher(enemy) for testing the method attackEnemy, and 
+	measure the effects of the attack on the enemy.
+	@param objFisher:(Fisher)
+	@param enemy:(enemy)
+	@param caseStudy:(caseStudy)
+	@return None
+	"""
 
 class voidclass(object):
 	def __init__(self,para):
@@ -477,20 +720,67 @@ if __name__ == "__main__":
 	print("\033[91mAfter")
 	listafter =fisherobj.listItemBackpack()
 	tam1 = len(listafter)
-	# print("\nItens detalhados:\n")
-	# for i in range(tam1):
-	# 	for j in range(3):
-	# 		l = listafter[i].find(names[j])
-	# 		#print(l)
-	# 		if(l>-1):
-	# 			print("\n It's presente \n")
-	# 			print(listafter[i])
-
-		
 	testingAddListUseItem(1000)
-			# else:
-			# 	print("\n It'not more presente \n")
-		#print(listafter[i])
-	#print(fisherobj.getDetail())	
-	#print(fisherobj.listItemBackpack())
 	
+	# test methods lisItemsfromIsland, collectedItem, name of the test_colectandlisItemsIsland 
+	hashsimple.update(simplekey)
+	keygen = hashsimple.hexdigest()
+	newIsland = Island("New Island")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,newIsland,keygen)
+	newIsland.addIndividual(simpleplayer)
+	[items,namesitems] = gerandoItem(1000)
+	#vector[0] have 1000 elements
+	#vector[1] have 1000 names of the elements
+	for i in range(1000):
+		actualitem = items[i]
+		newIsland.addItem(items[i])
+		test_colectandlisItemsIsland(simpleplayer,items[i],i)
+	#Test the dropItems method	
+	hashsimple.update(simplekey)
+	keygen = hashsimple.hexdigest()
+	newIsland = Island("New Island")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,newIsland,keygen)
+	newIsland.addIndividual(simpleplayer)
+	[items,namesitems] = gerandoItem(10)
+	for i in range(10):
+		simpleplayer.addItemBackpack(items[i])
+	testDropItems(simpleplayer,items,'1s')
+	
+	newIsland = Island("New Island")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,newIsland,keygen)
+	newIsland.addIndividual(simpleplayer)
+	[items,namesitems] = gerandoItem(100)
+	for i in range(100):
+		simpleplayer.addItemBackpack(items[i])
+	testDropItems(simpleplayer,items,'2s')
+
+	newIsland = Island("New Island")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,newIsland,keygen)
+	newIsland.addIndividual(simpleplayer)
+	[items,namesitems] = gerandoItem(1000)
+	for i in range(1000):
+		simpleplayer.addItemBackpack(items[i])
+	testDropItems(simpleplayer,items,'3s')	
+	#Test collect getinfoaboutSpellIsland ,and Drop Spells
+	for i in range(1000):
+		randomisland = Island("random Island")
+		spellnew = createRandomSpell()
+		randomisland.addSpellIsland(spellnew)
+		newPlayer = Fisher("Fisher"+str(i),100,espadacurta,cotademalha,randomisland,keygen)
+		randomisland.addIndividual(newPlayer)
+		test_ColectGetInfoDropSpells(newPlayer,spellnew,str(i)+" test collect spell,get info about spell,drop spell")
+	# test of getValueSpells
+	island_head = createIslandAndLinkedThem(10)
+	[sumtotal,firstisland] = insertedSpellsOnIslandsLink(island_head,10)
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,firstisland,keygen)
+	test_getvalueSpells(simpleplayer,sumtotal,"Test of sum of values spells: 1")	
+	# second test getValueSpells
+	island_head = createIslandAndLinkedThem(1000)
+	[sumtotal,firstisland] = insertedSpellsOnIslandsLink(island_head,1000)
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,firstisland,keygen)
+	test_getvalueSpells(simpleplayer,sumtotal,"Test of sum of values spells: 2")
+	# third test getValueSpells
+	island_head = createIslandAndLinkedThem(100000)
+	[sumtotal,firstisland] = insertedSpellsOnIslandsLink(island_head,100000)
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,firstisland,keygen)
+	test_getvalueSpells(simpleplayer,sumtotal,"Test of sum of values spells: 3")
