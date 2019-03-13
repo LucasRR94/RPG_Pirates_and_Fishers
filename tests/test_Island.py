@@ -90,6 +90,7 @@ def test_listItem(islandobj,refereitem,caseStudy):
 			print("Test sucessful, case study:",caseStudy)
 		else:
 			print("\033[91mError, not was found the item inside of the list, case study:", caseStudy)
+			
 def gerandoItem(numb):
 	'''
 	Return a number of items and their names, that was generated
