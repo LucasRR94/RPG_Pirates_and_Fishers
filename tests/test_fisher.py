@@ -594,8 +594,41 @@ def test_getDirectionfromIsland(objFisher,arrayDirections,caseStudy):
 	@param caseStudy:(int) case of study of the test
 	@return None
 	"""
-	pass	
+	answer = objFisher.getDirectionsfromIsland()	
+	if(answer == None and arrayDirections != None):
+		print("Error was not inserted the directions, case study:",caseStudy)
+		exit()
+	else:
+		sizeofanswer = len(answer)
+		sizeofarray  = len(arrayDirections)
+		if(sizeofanswer == sizeofarray):
+			vectresp = []
+			error = 0
+			if(sizeofanswer != 0):
+				for i in range(sizeofanswer):
+					error = 0
+					for j in range(sizeofanswer):
+						try:
+							assert(arrayDirections[i] == answer[j]) 
+						except:
+							error +=1
+						else:
+							error = -1000
+					try:
+						assert(error < 0)
+					except:
+						print("Error, direction don't was inserted, case study", caseStudy)
+						exit()	
 
+				print("Test sucessfull, Case study:",caseStudy)
+
+				print("Test sucessfull",caseStudy)
+
+			else:
+				print("Test sucessfull",caseStudy)			
+		else:
+			print("Error was not inserted the directions, case study:",caseStudy)
+			exit()	
 
 def test_listenemies(objFisher,arrayenemies,caseStudy):
 	"""
@@ -617,6 +650,7 @@ def test_attackEnemy(objFisher,enemy,caseStudy):
 	@param caseStudy:(caseStudy)
 	@return None
 	"""
+	pass
 
 class voidclass(object):
 	def __init__(self,para):
@@ -784,3 +818,19 @@ if __name__ == "__main__":
 	[sumtotal,firstisland] = insertedSpellsOnIslandsLink(island_head,100000)
 	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,firstisland,keygen)
 	test_getvalueSpells(simpleplayer,sumtotal,"Test of sum of values spells: 3")
+	# test getdirectionsfromIsland
+	#	"direction " +str(key)+ " the island is: " + str(islandkey)
+	randomisland = Island("randomisland")
+	randomisland1 = Island("randomisland1")
+	randomisland2 = Island("randomisland2")
+	randomisland3 = Island("randomisland3")
+	randomisland.adddirection(randomisland1,"right")
+	randomisland.adddirection(randomisland2,"left")
+	randomisland.adddirection(randomisland3,"back")
+	arrayanswer = []
+	arrayanswer.append("direction"+" right"+" the island is: "+"randomisland1")
+	arrayanswer.append("direction"+" left"+" the island is: "+"randomisland2")
+	arrayanswer.append("direction"+" back"+" the island is: "+"randomisland3")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,randomisland,keygen)
+	randomisland.addIndividual(simpleplayer)
+	test_getDirectionfromIsland(simpleplayer,arrayanswer,"Test get directions 1")
