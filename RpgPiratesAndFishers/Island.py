@@ -183,7 +183,24 @@ class Island():
 		else:
 			emptystr = []
 			for actualindividual in self.individualsPresent:
-				emptystr.append(actualindividual.getDetail)
+				emptystr.append(actualindividual.getDetail())
+			return emptystr
+
+
+	def listIndividualsforindividual(self,individualExcept):
+		"""
+		This method list the elements in the Island with exception of one element, that is passed by argument call "individualexcept"
+		@param individualExcept:(Individual) that will not inserted on the list return
+		@return :(array str) array with string that contains all the individuals in the island, with excepetion on one Individual
+		"""
+		if(len(self.individualsPresent)==0):
+			return None
+		else:
+			emptystr = []
+			for actualindividual in self.individualsPresent:
+				if(actualindividual != individualExcept):
+					emptystr.append(actualindividual.getDetail())
+
 			return emptystr
 
 	def verifyIndividuals(self):

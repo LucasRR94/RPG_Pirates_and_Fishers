@@ -360,6 +360,7 @@ def gerandoItem(numb):
 			items.append(gendefense)
 	
 	return resp
+
 def test_colectandlisItemsIsland(objFisher,itempassed,caseStudy):
 	"""
 	This function test if the item passed to the island could be collected on the fisher
@@ -596,8 +597,11 @@ def test_getDirectionfromIsland(objFisher,arrayDirections,caseStudy):
 	"""
 	answer = objFisher.getDirectionsfromIsland()	
 	if(answer == None and arrayDirections != None):
-		print("Error was not inserted the directions, case study:",caseStudy)
-		exit()
+		if(len(arrayDirections)==0):
+			print("Test sucessfull, Case study:",caseStudy)
+		else:	
+			print("Error was not inserted the directions, case study:",caseStudy)
+			exit()
 	else:
 		sizeofanswer = len(answer)
 		sizeofarray  = len(arrayDirections)
@@ -622,7 +626,7 @@ def test_getDirectionfromIsland(objFisher,arrayDirections,caseStudy):
 
 				print("Test sucessfull, Case study:",caseStudy)
 
-				print("Test sucessfull",caseStudy)
+				#print("Test sucessfull",caseStudy)
 
 			else:
 				print("Test sucessfull",caseStudy)			
@@ -639,7 +643,47 @@ def test_listenemies(objFisher,arrayenemies,caseStudy):
 	@param caseStudy:(int) case of study of the test
 	@return None
 	"""
-	pass
+	listofenemies = objFisher.listenemies()
+	if(listofenemies == None):
+		if(arrayenemies == list):
+			if(len(arrayenemies) == 0):
+				print("Test sucessfull, case study:",caseStudy)
+			else:
+				print("Error, the enemies was not inserted correcly, case Study:",caseStudy)
+				exit()
+		else:
+			print("Test sucessfull, case study:",caseStudy)	
+	else:
+		sizeofenemies = len(listofenemies)
+		sizeofarrayenemies = len(arrayenemies)
+		cont = 0
+		if(sizeofarrayenemies == sizeofenemies):
+			for i in range(sizeofenemies):
+				condition = 0
+				j=0
+				while(condition==0):
+					if(j<=sizeofarrayenemies-1):
+						condition+=1
+
+					if(listofenemies[i] == arrayenemies[j].getDetail()):
+						condition+=1
+						cont+=1
+						arrayenemies.pop(j)
+						backup = sizeofarrayenemies
+						sizeofarrayenemies = backup -1
+
+					
+					j+=1
+
+			if(sizeofenemies == cont):
+				print("Test sucessfull, case Study: ",caseStudy)		
+			else:
+				print("Error, elements or element not found, case study: ",caseStudy)
+				exit()
+		else:
+			print("Error, elements not found in vector, case study: ",caseStudy)
+			exit()		
+
 
 def test_attackEnemy(objFisher,enemy,caseStudy):
 	"""
@@ -651,6 +695,42 @@ def test_attackEnemy(objFisher,enemy,caseStudy):
 	@return None
 	"""
 	pass
+
+def gen_Random_Fisher(objisland,numb):
+	"""
+	This function generate a random Object of type (Fisher)
+	@param objisland :(Island) an object type island that the Fisher will be inserted
+	@param numb : (integer) a number that will be insert with the str for making the name
+	@return :(Fisher) an Object of type Fisher
+	"""
+	firsCriterion = random.randint(1,10)
+	secondCriterion = random.randint(1,10)
+	randomdefense  = Defense("gendefense",firsCriterion,secondCriterion)
+	randomweapon  = Weapon("genweapon",firsCriterion,secondCriterion)
+	
+	hashsimple = hashlib.sha256()
+	simplekey = bytes("Key","latin-1")
+	hashsimple.update(simplekey)
+	#keygen = hashsimple.hexdigest()
+	keygendecide = random.randint(0,1)
+	keygen = hashsimple.hexdigest()
+	
+	fisherobj = Fisher("simplefisher"+str(numb),firsCriterion,randomweapon,randomdefense,objisland,keygen)
+	objisland.addIndividual(fisherobj)
+	return fisherobj
+
+def gen_Random_Individual(objisland,numb):
+	"""
+	This function generate a random Object of Type (Individual)
+	@param Objisland:(Island) object type island that the individual will be inserted
+	@param numb :(integer) a number that will be insert with the str for making the name
+	@return :(Individual) an Object of type individual
+	"""
+	firsCriterion = random.randint(1,100)
+	secondCriterion = random.randint(1,100)
+	individualobj = Individual("Simple Individual"+str(numb),firsCriterion,secondCriterion,secondCriterion)
+	objisland.addIndividual(individualobj)
+	return individualobj
 
 class voidclass(object):
 	def __init__(self,para):
@@ -820,7 +900,7 @@ if __name__ == "__main__":
 	test_getvalueSpells(simpleplayer,sumtotal,"Test of sum of values spells: 3")
 	# test getdirectionsfromIsland
 	#	"direction " +str(key)+ " the island is: " + str(islandkey)
-	randomisland = Island("randomisland")
+	randomisland  = Island("randomisland")
 	randomisland1 = Island("randomisland1")
 	randomisland2 = Island("randomisland2")
 	randomisland3 = Island("randomisland3")
@@ -834,3 +914,40 @@ if __name__ == "__main__":
 	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,randomisland,keygen)
 	randomisland.addIndividual(simpleplayer)
 	test_getDirectionfromIsland(simpleplayer,arrayanswer,"Test get directions 1")
+	
+	randomisland  = Island("randomisland")
+	randomisland1 = Island("randomisland1")
+	randomisland2 = Island("randomisland2")
+	randomisland.adddirection(randomisland1,"right")
+	randomisland.adddirection(randomisland2,"left")
+	arrayanswer = []
+	arrayanswer.append("direction"+" right"+" the island is: "+"randomisland1")
+	arrayanswer.append("direction"+" left"+" the island is: "+"randomisland2")
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,randomisland,keygen)
+	randomisland.addIndividual(simpleplayer)
+	test_getDirectionfromIsland(simpleplayer,arrayanswer,"Test get directions 2")
+	
+	randomisland  = Island("randomisland")
+	arrayanswer = []
+	simpleplayer = Fisher("Jhogo",100,espadacurta, cotademalha,randomisland,keygen)
+	randomisland.addIndividual(simpleplayer)
+	test_getDirectionfromIsland(simpleplayer,arrayanswer,"Test get directions 3")
+	#def test_listenemies, Test listenemies
+	for i in range(10):
+		randomisland  = Island("randomisland")
+		simpleplayer  = Fisher("Jhogo",100,espadacurta, cotademalha,randomisland,keygen)
+		randomisland.addIndividual(simpleplayer)
+		arrayIndividual = []
+		numb = random.randint(1,1000) # max 1000 elements	
+		for j in range(numb):
+			k = random.randint(1,2)
+			character = None
+			if(k==1):
+				character = gen_Random_Fisher(randomisland,j)
+				arrayIndividual.append(character)
+			if(k==2):
+				character = gen_Random_Individual(randomisland,j)
+				arrayIndividual.append(character)
+
+		test_listenemies(simpleplayer,arrayIndividual,"Test listenemies"+str(i))
+# test test_attackEnemy

@@ -463,7 +463,7 @@ class Fisher(Individual):
 		@return :(array of str OR None) return an array contains details of Individuals present in same 
 		island or None
 		"""
-		return (self.actualisland.listIndividuals())
+		return (self.actualisland.listIndividualsforindividual(self))
 
 
 	# def dropItemsSpeels(self):
