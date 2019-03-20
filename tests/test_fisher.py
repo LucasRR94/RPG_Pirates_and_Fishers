@@ -688,13 +688,183 @@ def test_listenemies(objFisher,arrayenemies,caseStudy):
 def test_attackEnemy(objFisher,enemy,caseStudy):
 	"""
 	this test uses an object Fisher(enemy) for testing the method attackEnemy, and 
-	measure the effects of the attack on the enemy.
-	@param objFisher:(Fisher)
-	@param enemy:(enemy)
-	@param caseStudy:(caseStudy)
+	measure the effects of the attack on the enemy, and if the items and spells was inserted.
+	@param objFisher:(Fisher) the attacker, that will be measure  
+	@param enemy:(enemy) that will be attack.
+	@param caseStudy:(caseStudy) case of study
 	@return None
 	"""
-	pass
+	
+	if(type(enemy)==Individual):
+		islandactual = objFisher.getactualIsland()
+
+		lifeIndividual = enemy.getHealth() 
+		defenseIndividual = enemy.getValueDefense()
+		Individualattack = enemy.getValueAttack()
+
+		attackerCapacity = objFisher.getValueAttack()
+		attackerDefense = objFisher.getValueDefense()
+		attackerlife  = objFisher.getHealth()
+		attackerItems = len(objFisher.backpack)
+		attackerSpells = len(objFisher.spellcontainer)
+
+		result = objFisher.attackEnemy(enemy.getName())
+
+		if((lifeIndividual + defenseIndividual)<= attackerCapacity and result == 1):
+			try: # if the object enemy was eliminated
+				assert(islandactual.individualsPresent.index(enemy)==0)
+			except ValueError:
+				
+				if(Individualattack >= (attackerDefense + attackerlife) ):
+					try:	
+						assert(islandactual.individualsPresent.index(objFisher)==0)
+					except ValueError:
+						print("teste sucessfull, case study:",caseStudy)
+					except AssertionError:
+						print("Error, the player has died , but not be eliminated, case study:", caseStudy)	
+						exit()
+				
+				elif(Individualattack < (attackerDefense + attackerlife)):
+					
+					if(attackerDefense <= Individualattack):
+						try:
+							assert(objFisher.getValueDefense() == 0 and objFisher.getHealth() == (attackerlife + attackerDefense - Individualattack) and attackerSpells == len(objFisher.spellcontainer) and attackerCapacity == objFisher.getValueAttack() and attackerItems == len(objFisher.backpack))
+						except AssertionError:
+							print("Error, value of defense or health was not update after attack",caseStudy)	
+							exit()
+						else:
+							print("test sucessfull, case study:",caseStudy)
+					else:
+						try:
+							assert(attackerCapacity == objFisher.getValueAttack() and objFisher.getValueDefense() ==(attackerDefense - Individualattack) and objFisher.getHealth() == attackerlife and attackerItems == len(objFisher.backpack) and attackerSpells == len(objFisher.spellcontainer) )
+						except AssertionError:
+							print("Error, values after attack, was update incorrecly, case Study:",caseStudy)
+						else:
+							print("test sucessfull, case study:",caseStudy)			
+			except AssertionError:
+				print("Error, the object don't was eliminated, case study:",caseStudy)
+				exit()
+		
+		elif((lifeIndividual + defenseIndividual) > attackerCapacity and result == 1):
+			try: # if the object enemy was eliminated
+				assert(islandactual.individualsPresent.index(enemy)>=0)
+			except (AssertionError,ValueError) as e:
+				print("Error, the object was eliminated incorrecly, case study:",caseStudy)
+				exit()
+			else:
+				if(defenseIndividual > attackerCapacity):
+					newlife = lifeIndividual
+					newdefense = defenseIndividual - attackerCapacity
+
+				if(defenseIndividual <= attackerCapacity):
+					newdefense = 0
+					newlife = lifeIndividual + defenseIndividual - (attackerCapacity)
+					if(newlife <= 0):
+						newlife = None
+						Individualattack = None
+						newdefense = None	
+					
+				try:
+					assert(enemy.getHealth() == newlife and enemy.getValueDefense() == newdefense and enemy.getValueAttack() == Individualattack)
+				except AssertionError:
+
+					print("Error, the heath or attack of Individual was incorrecly sum, case study:", caseStudy)
+					exit()
+				else:
+					if(Individualattack >= (attackerDefense + attackerlife) ):
+						try:	
+							assert(islandactual.individualsPresent.index(objFisher)>=0)
+						except ValueError:
+							print("Test sucessfull, case study:", caseStudy)
+						else:
+							print("Error, the player keep on island incorrecly, case study:", caseStudy)
+							exit()
+					if(Individualattack < (attackerDefense + attackerlife)):	
+						
+						if(Individualattack < attackerDefense):
+							try:
+								assert(objFisher.getHealth() == attackerlife and objFisher.getValueDefense() == (attackerDefense - Individualattack) and objFisher.getValueAttack() == attacker and attackerItems == len(objFisher.backpack) and  attackerSpells== len(objFisher.spellcontainer) )
+
+							except AssertionError:
+								print("Error, the values are wrong, the update of values in attack has fail, case study:",caseStudy)
+								exit()
+							else:
+								print("Test sucessfull, case study:", caseStudy)
+						else:
+							try:
+								assert(objFisher.getValueDefense() == 0  and objFisher.getHealth() == (attackerlife + attackerDefense-Individualattack) and objFisher.getValueAttack() == attackerCapacity and attackerItems == len(objFisher.backpack) and  attackerSpells== len(objFisher.spellcontainer))
+							except AssertionError:
+								print("Error, the Fisher was modify incorrecly, case study:",caseStudy)
+								exit()
+							else:
+								print("Test sucessfull, case study:", caseStudy)		
+		if(result == 0):
+			try:
+				assert(enemy.getHealth() == lifeIndividual and enemy.getValueAttack() == Individualattack and enemy.getValueDefense() == defenseIndividual and objFisher.getValueDefense()==attackerDefense and objFisher.getValueAttack()==attackerCapacity and  objFisher.getHealth() == attackerlife and attackerItems == len(objFisher.backpack) and attackerSpells == len(objFisher.spellcontainer))
+			except AssertionError:
+				print("Error, the object was modify without the wright properties, case study:", caseStudy)
+			else:
+				print("Attention, possible error, the object don't was modify, case study:",caseStudy)
+
+
+	if(type(enemy)==Fisher):
+		islandactual = objFisher.getactualIsland()
+
+		lifeIndividual = enemy.getHealth()
+		Individualattack = enemy.getValueAttack()
+		Individualdefense = enemy.getValueDefense()
+		IndividualItems = len(enemy.backpack)
+		IndividualSpells = len(enemy.spellcontainer)
+
+		attackerCapacity = objFisher.getValueAttack()
+		attackerDefense = objFisher.getValueDefense()
+		attackerlife   = objFisher.getHealth()
+		attackerItems  = len(objFisher.backpack)
+		attackerSpells = len(objFisher.spellcontainer)
+
+		result = objFisher.attackEnemy(enemy.getName())
+		
+		if((lifeIndividual + Individualdefense) > attackerCapacity):
+			
+			if(Individualdefense >= attackerCapacity):
+				newdefense = 0
+				newlife = lifeIndividual + Individualdefense - attackerCapacity
+
+			if(Individualdefense < attackerCapacity):
+				newdefense = Individualdefense - attackerCapacity
+				newlife = lifeIndividual
+
+			try:
+				assert(enemy.getHealth() == newlife and enemy.getValueAttack() == Individualattack and enemy.getValueDefense() == newdefense and  IndividualSpells == len(enemy.spellcontainer) and attackerItems  == len(objFisher.backpack)and objFisher.getValueDefense()==attackerDefense and objFisher.getValueAttack()==attackerCapacity and  objFisher.getHealth() == attackerlife and attackerItems == len(objFisher.backpack) and attackerSpells == len(objFisher.spellcontainer))
+		
+			except AssertionError:
+				print("Error, in the sum of the attack, case study:", caseStudy)			
+				exit()
+			else:
+				print("Test Sucessfull, case study:", caseStudy)
+
+		else:
+			
+			try:
+				assert(islandactual.individualsPresent.index(enemy)>=0)
+			except ValueError:
+				try:
+					assert(objFisher.getValueDefense()==attackerDefense and objFisher.getValueAttack()==attackerCapacity and  objFisher.getHealth() == attackerlife and (attackerItems + IndividualItems) == len(objFisher.backpack) and (attackerSpells + IndividualSpells) == len(objFisher.spellcontainer))		
+				except AssertionError:
+					print("Error, the Attacker was modify incorrecly, case study:", caseStudy)
+					exit()
+				else:
+					print("test Sucessfull, case study:",caseStudy)
+			else:
+				print("Error, enemy not was eliminated, case study:",caseStudy)
+				exit()
+	
+	if(type(enemy)==None):
+		result = objFisher.attackEnemy(enemy)
+		if(result == 0):
+			print("test sucessfull, case study:",caseStudy)
+		else:
+			print("Error, the attack was count when should not:",caseStudy)
 
 def gen_Random_Fisher(objisland,numb):
 	"""
@@ -950,4 +1120,24 @@ if __name__ == "__main__":
 				arrayIndividual.append(character)
 
 		test_listenemies(simpleplayer,arrayIndividual,"Test listenemies"+str(i))
-# test test_attackEnemy
+	# test test_attackEnemy ,
+	cotademalha  = Defense("Cotade Malha",10,10)
+	for i in range(10):
+		randomisland  = Island("randomisland")
+		simpleplayer  = Fisher("Jhogo",80,espadacurta, cotademalha,randomisland,keygen)
+		randomisland.addIndividual(simpleplayer)
+		numb = random.randint(1,1000) # max 1000 elements	
+		k = random.randint(1,2)
+		character = None
+		hashsimple.update(simplekey)
+		keygen1 = hashsimple.hexdigest()
+		character = Fisher("Luizinho",1,espadacurta, cotademalha,randomisland,keygen1)
+		character.addItemBackpack(espadacurta)
+		randomisland.addIndividual(character)
+		# if(k==1):
+		# 	character = gen_Random_Fisher(randomisland,j)
+		# if(k==2):
+		# 	character = gen_Random_Individual(randomisland,j)
+		
+		test_attackEnemy(simpleplayer,character,"Test attack enemy:"+ str(i))
+		#exit()

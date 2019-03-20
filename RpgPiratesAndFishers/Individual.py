@@ -313,9 +313,7 @@ class Individual(object):
 					return answer
 				
 		
-			if(newnumb > 200):
-				newnumb = 200
-
+			
 			if(newnumb < 0): # no hit
 				newnumb = 0
 				return 1
@@ -324,22 +322,25 @@ class Individual(object):
 			healthbackup = self.getHealth()
 			defensevalue = newnumb - defenseBackup
 			totaldefenseandhealth = defenseBackup + healthbackup
-			if(totaldefenseandhealth <= valuehit): #death
+			if((self.getHealth() + self.getValueDefense()) <= newnumb): #death
 				self.__del__()
 				return 1
 			
-			if(defensevalue < 0):
+			if(self.getValueDefense() > newnumb): 
 				self.__setDefense(defenseBackup - newnumb)
 				return 1
-			if(defensevalue > 0):
-				if(defensevalue >= healthbackup): # death
+			
+			elif(self.getValueDefense() <= newnumb):
+				self.__setDefense(0)
+
+				if(newnumb >= (defenseBackup + self.getHealth())): 
+					print("Here")
 					self.__del__()
 					return 1 
 
 				else: # keep live without defense
-					newdefinitionattributehealth = healthbackup - defensevalue
-					self.__setDefense(0)
-					self.__setHealth(newdefinitionattributehealth)
+					#newdefinitionattributehealth = healthbackup - defensevalue
+					self.__setHealth(healthbackup+defenseBackup- newnumb)
 					return 1 
 
 

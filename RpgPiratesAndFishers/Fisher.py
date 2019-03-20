@@ -431,28 +431,50 @@ class Fisher(Individual):
 				return 0
 			else:
 				if(type(individualForAttack) == Individual):
-					individualForAttack.getDamage(self.getValueAttack())
-					self.getDamage(individualForAttack.getValueAttack())
-					self.actualisland.verifyIndividuals()
-					return 1
+					location = self.getactualIsland()
+					previousattackfromattacker = self.getValueAttack()
+					previousattackfromdefender = individualForAttack.getValueAttack()
+					individualForAttack.getDamage(previousattackfromattacker)
+					self.getDamage(previousattackfromdefender)
+					if(self.getHealth() == None and individualForAttack.getHealth() == None):
+						result  = location.removeIndividualPresente(self)
+						result2 = location.removeIndividualPresente(individualForAttack)
+						return (result2 or result)
+					elif(self.getHealth() != None and individualForAttack.getHealth() == None):
+						result = location.removeIndividualPresente(individualForAttack)
+						return (result)
+					elif(self.getHealth() == None and individualForAttack.getHealth() != None):
+						result = location.removeIndividualPresente(self)
+						return (result)	
+					elif(self.getHealth() != None and individualForAttack.getHealth() != None):
+						return (1)	
+
 				if(type(individualForAttack) == Fisher):
-					individualForAttack.getDamage(self.getValueAttack())	
-					if(individualForAttack.getHealth() == 0): #is death
+					result2 = 0
+					individualForAttack.getDamage(self.getValueAttack())
+					location = self.getactualIsland()
+					if(individualForAttack.getHealth() == None): #is death
 						ItemsSpellsenemy = individualForAttack.takeItemsandSpellsDeathplayer()	
 						if(ItemsSpellsenemy != None):
-							items = ItemsSpellsenemy.pop(1)
-							spells = ItemsSpellsenemy.pop(2)
-							for i in items:
-								self.addItemBackpack(i)
+							items = ItemsSpellsenemy.pop(0)
+							spells = ItemsSpellsenemy.pop(0)
+							if(items != None):
 
-							for j in spells:
-								self.__addspell(j)	
+								for i in items:
 
+									self.addItemBackpack(i)
+							if(spells != None):		
+								for j in spells:
+									self.__addspell(j)	
 
-					self.actualisland.verifyIndividuals()
-					return 1
+							result2 = location.removeIndividualPresente(individualForAttack)
+					#print(individualForAttack.getHealth())			
+					#elf.actualisland.verifyIndividuals()
+							return result2
+					else:
+						return 1
 				else:
-					return 1	
+					return 0	
 		else:
 			return 0
 

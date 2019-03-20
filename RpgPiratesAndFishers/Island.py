@@ -197,24 +197,57 @@ class Island():
 			return None
 		else:
 			emptystr = []
-			for actualindividual in self.individualsPresent:
+			for actualindividual in self.individualsPresent	:
 				if(actualindividual != individualExcept):
 					emptystr.append(actualindividual.getDetail())
 
 			return emptystr
 
-	def verifyIndividuals(self):
+	def removeIndividualPresente(self,referenceIndividual):
 		"""
-		This method is responsible to verify all the individuals, and exclude from the island 
-		all the Individuals that are not lives
-		@param None
-		@return None
+		This method remove a individual present on island, he uses the Individual for the remove
+		@param Individual:(referenceIndividual) reference for the Individual on the memory
+		@return :(int) 1 if sucessful , 0 otherwise
 		"""
-		if(len(self.individualsPresent)>=0):
-			for actualindividual in self.individualsPresent:
-				if(actualindividual.getHealth()<=0):
-					outofvector = self.individualsPresent.pop()
+		try:
+			assert(self.individualsPresent.index(referenceIndividual)>=0)
+		except ValueError:
 			return 0
+		else:
+			eliminate = self.individualsPresent.pop(self.individualsPresent.index(referenceIndividual))
+			if(eliminate == referenceIndividual):
+				try:
+					assert(self.individualsPresent.index(referenceIndividual)>=0)
+				except ValueError:
+					return 1
+				else:
+					return 0
+			else:
+				return 0
+	# def verifyIndividuals(self):
+	# 	"""
+	# 	This method is responsible to verify all the individuals, and exclude from the island 
+	# 	all the Individuals that are not lives
+	# 	@param None
+	# 	@return None
+	# 	"""
+	# 	if(self.individualsPresent != None):
+	# 		if(len(self.individualsPresent)>=0):
+
+	# 			for actualindividual in self.individualsPresent:
+					
+	# 				if(actualindividual != None):
+	# 					if(actualindividual.getHealth() != None):
+	# 						if(actualindividual.getHealth()<=0):
+	# 							outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))
+	# 					else:
+	# 						outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))	
+	# 						print(outofvector)
+	# 				else:
+	# 					outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))	
+	# 			return 0
+	# 	else:
+	# 		return 0
 
 	def adddirection(self,newisland,key):
 		"""
