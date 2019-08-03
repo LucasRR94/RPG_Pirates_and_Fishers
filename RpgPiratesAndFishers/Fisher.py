@@ -174,7 +174,10 @@ class Fisher(Individual):
 							if(backup2 != None):
 								self.backpack.append(backup2)
 
-							return 1
+							result =[]
+							result.append(1)
+							result.append(itembackup)
+							return result
 						else:
 							if(type(itembackup) is Medkit):
 								backup2 = self.__usingMedKit(itembackup)
