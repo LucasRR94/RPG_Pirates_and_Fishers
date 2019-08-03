@@ -5,7 +5,7 @@ from libGamePiratesAndFishers import assertIfIsWeelFormat
 from Item import Item
 from Individual import Individual
 from Spell import Spell
-#from Fisher import Fisher
+from Fisher import Fisher
 
 class Island():
 	""" 
@@ -135,7 +135,7 @@ class Island():
 
 	def addIndividual(self, newIndividual):
 		"""
-		this method adds objects type individuals on the game, if he is successful he returns 1, otherwise 0
+		this method adds object type individuals on the game, if he is successful he returns 1, otherwise 0
 		@param newIndividual, (Individual) obj type Individual
 		@return ,(int) 1 if successful on insert on the Island, 0 otherwise 
 		"""
@@ -162,7 +162,7 @@ class Island():
 		if(type(identification) is str):
 			# search
 			sizearray = len(self.individualsPresent)
-			if(sizearray <=0):
+			if(sizearray ==0):
 				return None
 			else:
 				for i in range(sizearray):
@@ -224,30 +224,87 @@ class Island():
 					return 0
 			else:
 				return 0
-	# def verifyIndividuals(self):
-	# 	"""
-	# 	This method is responsible to verify all the individuals, and exclude from the island 
-	# 	all the Individuals that are not lives
-	# 	@param None
-	# 	@return None
-	# 	"""
-	# 	if(self.individualsPresent != None):
-	# 		if(len(self.individualsPresent)>=0):
 
-	# 			for actualindividual in self.individualsPresent:
-					
-	# 				if(actualindividual != None):
-	# 					if(actualindividual.getHealth() != None):
-	# 						if(actualindividual.getHealth()<=0):
-	# 							outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))
-	# 					else:
-	# 						outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))	
-	# 						print(outofvector)
-	# 				else:
-	# 					outofvector = self.individualsPresent.pop(self.individualsPresent.index(actualindividual))	
-	# 			return 0
-	# 	else:
-	# 		return 0
+	def attackIndividual(self,idIndividualAttacker,idIndividualDefender):
+		"""
+		This method provides attack on the defender, if the defender it is not a fisher then he will retaliate(atack
+		the attacker), if any individual don't has life he will be eliminated, and all items will be trasnfer for the alive individual.
+		
+		@param idIndividualAttacker: (object type individual) identifier of individual that will attack
+		@param idIndividualDefender: (object type individual) identifier of individual that will be attacked
+		
+		@return: (int) 1 if attack sucessful , 0 otherwise.
+		"""
+		attacker = self.getIndividual(idIndividualAttacker)
+		if(attacker == None):
+			return 0
+		else:
+			return attacker.attackEnemy(idIndividualDefender)
+
+
+
+	def getDetailofIndividual(self,idactualIndividual):
+		"""
+		This function just call the function of details of Individual, in the Individual
+		
+		@param idactualIndividual: (object type individual) id of the individual
+		
+		@return :(int,str)  1 and string that carrier the details of individual or 0 and None
+		"""
+		interstindividual = self.getIndividual(idactualIndividual)
+		return interstindividual.getDetail()
+
+	def useItemBackPackFisher(self,actualfisher,choose):
+		"""
+		This method just call the method in the Fisher class, to use an item in the backpack
+		
+		@param actualfisher :(object type fisher) fisher that will execute the change
+		@param item:(str) is an refer to an obj present of backpack
+		
+		@return :(int) 1 if sucessful, 0 otherwise
+		"""
+		interstFisher = self.getIndividual(actualfisher)
+		if(type(interstFisher) != Fisher):
+			return 0
+		returnofmethod = interstFisher.useItemBackpack(choose)
+		if(type(returnofmethod) == list):
+			copy = returnofmethod[1]
+			self.addItem(copy)
+			return 1 
+		else:
+			return returnofmethod
+
+
+
+	def collectSpellOnIsland(self,idactualFisher):
+		"""
+		This method transfer the object spell in the island for the Fisher
+
+		@param actualFisher :id of object type Fisher that will colect the spell
+		
+		@return : (int) 1 if sucessful, 0 otherwise
+		"""
+		intersFisher = self.getIndividual(idactualFisher)
+		if(type(intersFisher) != Fisher):
+			return 0
+		if(self.statusSpell == 1):
+			return intersFisher.collectSpell()
+
+
+	def listItemsBackPack(self,actualFisher):
+		"""
+		This method list all the items of the backpack of actualFisher, thow calling the method on the fisher class
+
+		@param actualFisher : id of object type Fisher the return the element on the backpack
+
+		@return : (str) that will represent the backpack itens, or None
+		"""
+		interstFisher = self.getIndividual(actualfisher)
+		if(type(interstFisher) != Fisher):
+			return None
+
+		return interstFisher.listItemBackpack()
+
 
 	def adddirection(self,newisland,key):
 		"""
