@@ -7,7 +7,7 @@ from Individual import Individual
 from Weapon import Weapon
 from Defense import Defense
 from Medkit import Medkit
-from Island import Island
+#from Island import Island
 from libGamePiratesAndFishers import assertFormat
 import hashlib
 import random
