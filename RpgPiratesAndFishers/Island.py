@@ -345,7 +345,7 @@ class Island():
 			answer = []
 			for i in self.directions:
 				actualisland = self.directions[i]
-				newtuple = (i,self.directions[i].getName())
+				newtuple = self.directions[i].getName() + " direction : "+ str(i)
 				answer.append(newtuple)
 			return answer
 		else:
