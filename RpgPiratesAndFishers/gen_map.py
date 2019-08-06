@@ -135,42 +135,54 @@ def genMap():
 	
 	@param None
 	
-	@return :(object type islands) the island 0
+	@return : dictionary of islands, that are index by the name island +("0" ..."10"), eleven in total
 	"""  
+	Mapgenerate = {} # the entire map generated
+	
 	nameisland= "island 0" 
 	island0 = Island(nameisland)
+	Mapgenerate["island 0"] = island0
 	
 	nameisland= "island 1" 
 	island1 = Island(nameisland)
-	
+	Mapgenerate["island 1"] = island1
+
 	nameisland= "island 2" 
 	island2 = Island(nameisland)
+	Mapgenerate["island 2"] = island2
 	
 	nameisland= "island 3" 
 	island3 = Island(nameisland)
+	Mapgenerate["island 3"] = island3
 	
 	nameisland= "island 4" 
 	island4 = Island(nameisland)
+	Mapgenerate["island 4"] = island4
 	
 	nameisland= "island 5" 
 	island5 = Island(nameisland)
+	Mapgenerate["island 5"] = island5
 	
 	nameisland= "island 6" 
 	island6 = Island(nameisland)
+	Mapgenerate["island 6"] = island6
 	
 	nameisland= "island 7" 
 	island7 = Island(nameisland)
+	Mapgenerate["island 7"] = island7
 	
 	nameisland= "island 8" 
 	island8 = Island(nameisland)
+	Mapgenerate["island 8"] = island8
 	
 	nameisland= "island 9" 
 	island9 = Island(nameisland)
+	Mapgenerate["island 9"] = island9
 	
 	nameisland= "island 10" 
 	island10 = Island(nameisland)
-	#a = genSpellforIsland(2)
-	#exit()
+	Mapgenerate["island 10"] = island10
+	
 	cont = 4
 	island0.addSpellIsland(genSpellforIsland(2))
 	island0.addItem(genenerateItemsToIsland(1))
@@ -278,5 +290,5 @@ def genMap():
 	island10.adddirection(island8,"left")
 	
 	
-	return island4
+	return Mapgenerate
 
