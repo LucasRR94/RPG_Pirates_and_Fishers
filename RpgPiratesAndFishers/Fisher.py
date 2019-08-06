@@ -7,7 +7,7 @@ from Individual import Individual
 from Weapon import Weapon
 from Defense import Defense
 from Medkit import Medkit
-#from Island import Island
+from Island import Island
 from libGamePiratesAndFishers import assertFormat
 import hashlib
 import random
@@ -103,6 +103,15 @@ class Fisher(Individual):
 		@return : object type Island, or None
 		"""
 		return self.actualisland
+	
+	def getNamelocation(self):
+		"""
+		This method  return an string, that represent the name of the actual island where is located the Fisher
+
+		@return : (str), that represent the name of the actual island of the fisher
+		"""
+		return self.actualisland.getName()
+		
 	
 	def getIdplayer(self):
 		"""
@@ -358,18 +367,18 @@ class Fisher(Individual):
 		@return :(list) contained "direction and island destination", None if empty
 		"""
 		tupleisland = self.actualisland.listdirections()
+		#return 1
 		if(type(tupleisland)== tuple):
 			return None
 		
 		if(type(tupleisland)==list):
-			answer = []
-			
+			answer = "\n"
 			for i in tupleisland:
 				key = i[0]
 				islandkey = i[1]
 				phraseformed = "direction "+str(key)+" the island is: "+ str(islandkey)
-				answer.append(phraseformed)
-			
+				answer+=phraseformed + "\n"
+			answer+="\n"
 			return answer
 		
 		else:
