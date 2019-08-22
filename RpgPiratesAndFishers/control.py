@@ -40,7 +40,7 @@ def insertIntoMap(nameFisher,health,itemAttack,itemDefense,objectMap):
 	word = bytes(str(randnumb),"latin-1")
 	objhash.update(word)
 	if(type(itemAttack) == Weapon and type(itemDefense) == Defense and type(health) == int):
-		if(health<1 and health >100):
+		if(health < 1 and health > 100):
 			health = 60
 		randomFisher = Fisher(nameFisher,health,itemAttack,itemDefense,objectMap[randomIslandbourne()],objhash.hexdigest()) 
 		try:
@@ -69,4 +69,7 @@ if __name__ == "__main__":
 	resposta = insertIntoMap("Brave fisher",0,0,0,mainmap)
 	mainmap = resposta[0]
 	fisher = resposta[1]
-	print(fisher.getNamelocation())
+	print(fisher.getinfoaboutSpellonIsland())
+	print(fisher.collectSpell())
+	print("After :\n")
+	print(fisher.getinfoaboutSpellonIsland())

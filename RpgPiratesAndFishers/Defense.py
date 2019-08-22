@@ -25,7 +25,7 @@ class Defense(Item):
 		super().__init__(name)
 		self.maneuverability = super().limitsValues(maneuverability)
 		self.protection = super().limitsValues(protection)
-
+		
 	def __del__(self):
 		""" 
 		it's destroy the object.
@@ -45,7 +45,6 @@ class Defense(Item):
 		
 		@return : (int)Number who represent the defense of the object
 		"""
-		
 		return(self.maneuverability * self.protection)
 	
 	def reportDamage(self,damage):

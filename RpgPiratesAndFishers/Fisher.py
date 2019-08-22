@@ -73,10 +73,10 @@ class Fisher(Individual):
 		attack = 0
 		defense = 0
 
-		if(type(itemattack) is Weapon):
-			attack = itemattack.getAttack()
-		if(type(itemdefense) is defense):
-			defense = itemdefense.getDefense()
+		if(self.itemdefense != None):
+			defense = self.itemdefense.getDefense()
+		if(self.itemattack != None):
+			attack = self.itemattack.getAttack()	
 		super().__init__(name,health,attack,defense)
 		self.backpack =[]# start backpack of itens, where all the itens will be stored
 		self.spellcontainer =[]# start container of spells, where all the spells geted will appear
@@ -104,6 +104,14 @@ class Fisher(Individual):
 		"""
 		return self.actualisland
 	
+	def getIdplayer(self):
+		"""
+		This method return an object type (string), representing one hashlib_HASH key that are present in the object Fisher as attribute
+		
+		@return : object type str, or None
+		"""
+		return self.idplayer
+
 	def getNamelocation(self):
 		"""
 		This method  return an string, that represent the name of the actual island where is located the Fisher
@@ -112,14 +120,6 @@ class Fisher(Individual):
 		"""
 		return self.actualisland.getName()
 		
-	
-	def getIdplayer(self):
-		"""
-		This method return an object type (string), representing one hashlib_HASH key that are present in the object Fisher as attribute
-		
-		@return : object type str, or None
-		"""
-		return self.idplayer
 	
 	def addItemBackpack(self,item):
 		"""
@@ -138,17 +138,17 @@ class Fisher(Individual):
 		This method list all the itens present on backpack
 		
 		@return : (list) is a list of strings, that carrier 
-		the details of items present on back pack, or None if
-		is empty
+		the details of items present on back pack, or mensage
+		indicate that are empty the backpack
 		"""
 		if(len(self.backpack) > 0):
-			message = []
+			message = "Items Present Backpack:\n"
 			for i in range(len(self.backpack)):
-				message.append(self.backpack[i].getDetail())
-
+				message+=self.backpack[i].getDetail()
+			
 			return message	
 		else:
-			return None
+			return 'No Items on backpack'
 
 	def useItemBackpack(self,choose):
 		"""
@@ -280,8 +280,14 @@ class Fisher(Individual):
 		@param None:
 		@return :(array) array of strings, that carrier details from items present on actual position
 		"""
-		
-		return(self.actualisland.getListItems())
+		result = ""
+		container = self.actualisland.getListItems()
+		if(container!=None):
+			for i in container:
+				result+=i 
+			return(result)
+		else:
+			return "No items on actual island"
 
 	def dropItems(self):
 		"""
@@ -339,7 +345,11 @@ class Fisher(Individual):
 		@param None:
 		@return :(int) return 1 case exist spell on the island, otherwise return 0
 		""" 
-		return (self.actualisland.statusSpell())
+		if(self.actualisland.statusSpell()  != 0):
+			return "Spells available in island"
+		else:
+			return "No spell present on the island"
+		
 	
 	def changeIsland(self,direction):
 		"""
@@ -393,7 +403,11 @@ class Fisher(Individual):
 		spellcolect = self.actualisland.getSpell()
 		if(spellcolect != None):
 			if(type(spellcolect)==Spell):
-				return(self.__addspell(spellcolect))
+				if(self.__addspell(spellcolect)==1):
+					return "Sucess on collect spell\n"
+				else:
+					return "Fail in collect spell\n"
+				
 			else:
 				return 0
 		else:
@@ -495,9 +509,18 @@ class Fisher(Individual):
 		This method return an list of all enemies with their details, if there is not enemies return None
 		@param None 
 		@return :(array of str OR None) return an array contains details of Individuals present in same 
-		island or None
+		island or message indicate that the island is empty
 		"""
-		return (self.actualisland.listIndividualsforindividual(self))
+		container = []
+		container = self.actualisland.listIndividualsforindividual(self)
+		num = len(container)
+		result = ""
+		for i in container:
+			result+=i
+		if(num == 0):
+			return "No enemies in actual island!!!"
+		else:
+			return result
 
 
 	# def dropItemsSpeels(self):

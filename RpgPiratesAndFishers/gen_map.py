@@ -114,15 +114,15 @@ def genenerateItemsToIsland(num):
 		return longHammer
 	
 	if(num==12):
-		lightShield = Defense("Light Shield",5,4)    # 20 de defesa
+		lightShield = Defense("Light Shield",5,8) 
 		return lightShield
 	
 	if(num==13):
-		heavyShield = Defense("Heavy Shield",4,6)   # 24 de defesa
+		heavyShield = Defense("Heavy Shield",9,5) 
 		return heavyShield
 	
 	if(num==14):
-		chainmail  = Defense("Chainmail",9,4)   # 36 de defesa
+		chainmail  = Defense("Chainmail",10,7)   
 		return chainmail
 	
 	else:

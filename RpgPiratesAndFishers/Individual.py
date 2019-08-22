@@ -26,7 +26,9 @@ class Individual(object):
 		"""
 
 		self.name = assertIfIsWeelFormat(name)
-		self.health = makeSureThatIsnumberLimited(health,100) 
+		self.health = makeSureThatIsnumberLimited(health,100)
+		if(self.health == 0):
+			self.health = 1 
 		self.attack = makeSureThatIsnumberLimited(attack,100)
 		self.defense = makeSureThatIsnumberLimited(defense,100)
 
