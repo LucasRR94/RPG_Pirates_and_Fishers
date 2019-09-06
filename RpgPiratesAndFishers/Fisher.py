@@ -141,6 +141,8 @@ class Fisher(Individual):
 		the details of items present on back pack, or mensage
 		indicate that are empty the backpack
 		"""
+		if(self.backpack == None):
+			return 'No Items on backpack'
 		if(len(self.backpack) > 0):
 			message = "Items Present Backpack:\n"
 			for i in range(len(self.backpack)):
@@ -157,7 +159,7 @@ class Fisher(Individual):
 		and if this replace other, the replaced is 
 		stored in backpack.
 		
-		@param item:(str) is an refer to an obj present of backpack
+		@param choose:(str) is an refer to an obj present of backpack
 		
 		@return : (1) if is successfull the operation, 0 if is fail
 		"""
@@ -273,6 +275,7 @@ class Fisher(Individual):
 			return 0
 		else:
 			self.backpack.append(itemonisland)
+			return 1
 
 	def listItemsfromIsland(self):
 		"""	
@@ -330,6 +333,8 @@ class Fisher(Individual):
 		@return :(int) number that represent the value of all the spells summed, or 0 if there is not spell
 		"""
 		value = 0
+		if(self.spellcontainer == None):
+			return 0
 		if(len(self.spellcontainer) > 0):
 			for spell in self.spellcontainer:
 				backup = value
@@ -398,7 +403,7 @@ class Fisher(Individual):
 		"""
 		This method colect from island a obj Spell available, if is not available return 0, otherwise return 1
 		@param None:
-		@return :(int) 1 if sucessfull colect, 0 otherwise
+		@return :(int) "Sucess on collect spell" if sucessfull colect, "Fail in collect spell" otherwise
 		"""
 		spellcolect = self.actualisland.getSpell()
 		if(spellcolect != None):
@@ -409,11 +414,11 @@ class Fisher(Individual):
 					return "Fail in collect spell\n"
 				
 			else:
-				return 0
+				return "Fail in collect spell\n"
 		else:
-			return 0
+			return "Fail in collect spell\n"
 
-	def takeItemsandSpellsDeathplayer(self):
+	def _takeItemsandSpellsDeathplayer(self):
 		"""
 		This method just returns all the objects type Items and Spells present on the player death
 		He do that using the methods:dropItems and dropSpells
@@ -465,7 +470,7 @@ class Fisher(Individual):
 					if(self.getHealth() == None and individualForAttack.getHealth() == None):
 						result  = location.removeIndividualPresente(self)
 						result2 = location.removeIndividualPresente(individualForAttack)
-						return (result2 or result)
+						return (result2 and result)
 					elif(self.getHealth() != None and individualForAttack.getHealth() == None):
 						result = location.removeIndividualPresente(individualForAttack)
 						return (result)
@@ -480,23 +485,23 @@ class Fisher(Individual):
 					individualForAttack.getDamage(self.getValueAttack())
 					location = self.getactualIsland()
 					if(individualForAttack.getHealth() == None): #is death
-						ItemsSpellsenemy = individualForAttack.takeItemsandSpellsDeathplayer()	
+						ItemsSpellsenemy = individualForAttack._takeItemsandSpellsDeathplayer()	
 						if(ItemsSpellsenemy != None):
 							items = ItemsSpellsenemy.pop(0)
 							spells = ItemsSpellsenemy.pop(0)
 							if(items != None):
-
 								for i in items:
-
 									self.addItemBackpack(i)
 							if(spells != None):		
 								for j in spells:
 									self.__addspell(j)	
 
 							result2 = location.removeIndividualPresente(individualForAttack)
-					#print(individualForAttack.getHealth())			
-					#elf.actualisland.verifyIndividuals()
+							
 							return result2
+						else:
+							result2 = location.removeIndividualPresente(individualForAttack)
+							return 1
 					else:
 						return 1
 				else:
@@ -523,8 +528,6 @@ class Fisher(Individual):
 			return result
 
 
-	# def dropItemsSpeels(self):
-
 	def getDetail(self):
 		"""
 		it's getting the attributes of the class, providing a report of the object,
@@ -533,7 +536,7 @@ class Fisher(Individual):
 		@param None:
 
 		@return (string) : getting an report of the attributes of the object, and report
-		on weapon and Defense
+		on weapon and Defense Items
 
 		"""
 		partialResult  = super().getDetail()

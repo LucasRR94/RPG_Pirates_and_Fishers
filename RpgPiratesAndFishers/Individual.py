@@ -322,8 +322,16 @@ class Individual(object):
 
 			defenseBackup = self.getValueDefense()
 			healthbackup = self.getHealth()
-			defensevalue = newnumb - defenseBackup
-			totaldefenseandhealth = defenseBackup + healthbackup
+			if(defenseBackup == healthbackup == None): #death
+				self.__del__()
+				return 1 
+			if(defenseBackup == None):
+				defensevalue = 0
+			if(defenseBackup != None):
+				defensevalue = newnumb - defenseBackup
+			if(healthbackup == None):
+				healthbackup = 0
+			totaldefenseandhealth = defensevalue + healthbackup
 			if((self.getHealth() + self.getValueDefense()) <= newnumb): #death
 				self.__del__()
 				return 1
