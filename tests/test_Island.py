@@ -1,160 +1,61 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
+import pytest
+import os
+import sys
+pathfile = os.getcwd()
 
-from Island import Island
-from Item import Item
+newpath  = pathfile.split('/')
+newpath[len(newpath)-1] = "RpgPiratesAndFishers" 
+pathfile = "/".join(newpath)
+sys.path.append(pathfile)
+
+from Fisher import Fisher
 from Weapon import Weapon
 from Defense import Defense
+from Island import Island
 from Medkit import Medkit
-import random
+from Spell import Spell
+from Item import Item
+from Individual import Individual
+from libGamePiratesAndFishers import genRandomName
 
-def test_addItem(islandobj,refereitem,caseStudy):
-	"""
-	this function is testing the insertion of the elements on the list in the island
-	@param islandobj:(island) the obj that will be inserted the elements 
-	@param refereitem:(item) the item that will be inserted
-	@param caseStudy:(int) the number of study case
-	@return None
-	"""
-	if(isinstance(refereitem,Item)):
-		try:
-			assert(islandobj.addItem(refereitem) ==1)
-		except AssertionError:
-			print("Error, don't was inserted the obj, correcly, study case:",caseStudy)
-			exit()
-		else:
-			try:
-				assert(islandobj.itemisland.index(refereitem)>=0)
-			except AssertionError:
-				print("Error, the obj, not found on the list. Case study:", caseStudy)
-				exit()
-			else:
-				print("Test sucessful,case study:",caseStudy)
-	else:
-		try:
-			assert(islandobj.addItem(refereitem) == 0)
-		except AssertionError:
-			print("Error , a strange object was add into vector, case Study:",caseStudy)
-			exit()
-		else:
-			try:
-				assert(islandobj.itemisland.index(refereitem)>=0)
-			except ValueError:
-				print("Test sucessful,caseStudy:", caseStudy)
-			else:
-				print("Error, was inserted an strange object in vector, case study:",caseStudy)	
-				exit()
+@pytest.mark.parametrize("standartinput",[(["Island 1" , "Island 2" , "Island 1Island 1Island 1Island 1l"])])
+def test_getName(standartinput):
+	genIsland = Island(standartinput[0])
+	assert genIsland.getName() == standartinput[0]
+	genIsland = Island(standartinput[1])
+	assert genIsland.getName() == standartinput[1]
+	genIsland = Island(standartinput[2])
+	assert genIsland.getName() != standartinput[2] and len(genIsland.getName()) > 5 and len(genIsland.getName()) <= 32
 
-def test_getItem(islandobj,nameofitem,refereitem,caseStudy):
-	if(isinstance(refereitem,Item)):
-		try:
-			result = islandobj.getItem(nameofitem) 
-			assert(result==refereitem)
-		except AssertionError:
-			print("\033[91mError, o item don't was present on the list, caseStudy",caseStudy)
-		else:
-			try:
-				assert(islandobj.itemisland.index(refereitem)>=0)
-			except (ValueError,AssertionError) as e:
-				print("Test sucessful,case study:",caseStudy)
-			else:
-				print("\033[91mError,the element keeped on the list, case study:",caseStudy)
-
-	else:
-		try:
-			assert(islandobj.getItem(nameofitem)==None)
-		except AssertionError:
-			print("\033[91mError, the item was inserted incorrecly, case study:",caseStudy)
-		else:
-			try:
-				assert(islandobj.itemisland.index(refereitem)>=0)
-			except (AssertionError,ValueError) as e :
-				print("Test sucessful, study case:", caseStudy)				
-			else:
-				print("\033[91mError, and the strange obj was found on the list,case study:",caseStudy)					
-		
-def test_listItem(islandobj,refereitem,caseStudy):
-	if(isinstance(refereitem,Item)):
-		try:
-			detailsfromitems = islandobj.getListItems()
-			assert(findindetailsname(detailsfromitems,refereitem.getName())==1)
-		except AssertionError:
-			print("\033[91mError, not was found the item inside of the list, case study:", caseStudy)
-		else:
-			print("Test sucessful, case study:",caseStudy)
-	else:
-		try:
-			detailsfromitems = islandobj.getListItems()
-			assert(findindetailsname(detailsfromitems,refereitem.getName())==0)
-		except AssertionError:
-			print("Test sucessful, case study:",caseStudy)
-		else:
-			print("\033[91mError, not was found the item inside of the list, case study:", caseStudy)
-			
-def gerandoItem(numb):
-	'''
-	Return a number of items and their names, that was generated
-	@param numb:(int) is an int that informs how much elements has to be generated
-	@return :(list) return an list composed by all the [objects, names of objects]
-	'''
-	items = []
-	names = []
-	resp = [items,names]
-	for i in range(numb):
-		whatitemis = random.randint(1,3)
-		if(whatitemis == 1): # created med kit whatitemis = 1
-			genname = "Medkit"+str(i)
-			genparam1 = random.randint(0,95)
-			names.append(genname)
-			genmedkit = Medkit(genname,genparam1)
-			items.append(genmedkit)
-
-		if(whatitemis == 2): # created Weapon  whatitemis = 2
-			genname = "Weapon"+str(i)
-			genparam1 = random.randint(0,10)
-			genparam2 = random.randint(0,10)
-			names.append(genname)
-			genweapon = Weapon(genname,genparam1,genparam2)
-			items.append(genweapon)
-
-		if(whatitemis == 3): # created Defense whatitemis = 3
-			genname = "Defense"+str(i)
-			genparam1 = random.randint(0,10)
-			genparam2 = random.randint(0,10)
-			names.append(genname)
-			gendefense = Defense(genname,genparam1,genparam2)
-			items.append(gendefense)
+@pytest.mark.parametrize("standartinput",[ (Defense("Defesa 1",10,10) ,Weapon("Weapon 1",10,10) , Medkit("Bandage",10)),(None ,Island("Island test") , Individual("Random subject",10,10,10))])
+def test_addItem(standartinput):
+	genIsland = Island("Gen Island")
+	if(isinstance(standartinput[0],Item) ):
+		assert genIsland.addItem(standartinput[0]) == 1
+	if(not(isinstance(standartinput[0],Item))):
+		assert genIsland.addItem(standartinput[0]) == 0
+	if(isinstance(standartinput[1],Item) ):
+		assert genIsland.addItem(standartinput[1]) == 1
+	if(not(isinstance(standartinput[1],Item))):
+		assert genIsland.addItem(standartinput[1]) == 0
+	if(isinstance(standartinput[2],Item) ):
+		assert genIsland.addItem(standartinput[2]) == 1
+	if(not(isinstance(standartinput[2],Item))):
+		assert genIsland.addItem(standartinput[2]) == 0	
 	
-	return resp
 
-def findindetailsname(listdetails,nameofitem):
-
-	if(type(listdetails) is list):
-		if(len(listdetails)==0):
-			return 0
+@pytest.mark.parametrize("standartinput",[ (0,None,Defense("Defesa 1",10,10) ,Weapon("Weapon 1",10,10) , Medkit("Bandage",10)),(None,0,Defense("Defesa 4",10,10) ,Weapon("Weapon 5",10,10) , Medkit("Bandage 9",10))])
+def test_getItem(standartinput):	
+	genIsland = Island("Gen Island")
+	for i in range(len(standartinput)):
+		if(isinstance(standartinput[i],Item)):
+			assert genIsland.addItem(standartinput[i]) == 1
+			assert genIsland.getItem(standartinput[i].getName()) == standartinput[i]
 		else:
-			tam = len(listdetails)
-			for i in range(tam):
-				position = listdetails[i].find(nameofitem)
-				if(position!=-1):
-					return 1
-			return 0
-	else:
-		return 0 
-if __name__ == "__main__":
-	islabonita = Island("Isla Bonita")
-	resp = gerandoItem(1000)
-	itemsgerados = resp[0]
-	l = []
-	for i in range(1000):
-		test_addItem(islabonita,itemsgerados[i],i)
-	print("\n\033[92m###Test list###")	
-	for i in range(1000):
-		test_listItem(islabonita,itemsgerados[i],i)	
-
-
-	print("\n\033[92m###Test Get###")	
-	for i in range(1000):
-		test_getItem(islabonita,itemsgerados[i].getName(),itemsgerados[i],i)	
-	test_getItem(islabonita,"Welfer",1,"not in island 1")
-	test_getItem(islabonita,"Floyd",l,"not in island 2")	
+			assert genIsland.addItem(standartinput[i]) == 0
+			assert genIsland.getItem(standartinput[i]) == None
+	
+	
+	
+	
+	
