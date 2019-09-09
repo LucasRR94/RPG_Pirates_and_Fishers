@@ -101,7 +101,95 @@ def test_statusSpell(standartinput):
 			assert genIsland.addSpellIsland(standartinput[i]) == 0	
 			assert genIsland.statusSpell() == 0
 	
-	
-	
-	
-	
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1)))])	
+def test_addIndividual(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Fisher("random fisher",standartinput[3],standartinput[5],standartinput[4],None,"0")
+	genIsland = Island("Generic Island")
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert genIsland.addIndividual(standartinput[5]) == 0
+	assert genIsland.addIndividual(None) == 0
+	assert genIsland.addIndividual(genIndividual) == 0
+	assert len(genIsland.individualsPresent) == 2
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1)))])
+def test_getIndividual(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Individual("random fisher",standartinput[3],standartinput[5],standartinput[4])
+	genIsland = Island("Generic Island")
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert genIsland.getIndividual(genIndividual.getName()) == genIndividual
+	assert genIsland.getIndividual(genfisher.getName()) == genfisher
+
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1)))])
+def test_listIndividuals(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Fisher("random fisher",standartinput[3],standartinput[5],standartinput[4],None,"0")
+	genIsland = Island("Generic Island")
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert genIsland.listIndividuals().index(genIndividual.getDetail()) >= 0
+	assert genIsland.listIndividuals().index(genfisher.getDetail()) >= 0
+	assert genIsland.addIndividual(None) == 0
+	assert len(genIsland.listIndividuals()) ==2 
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1),Defense("Defesa 2",10,10),Weapon("Weapon x",10,10)))])	
+def test_listIndividualsforindividual(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Fisher("random fisher",standartinput[3],standartinput[5],standartinput[4],None,"0")
+	genIsland = Island("Generic Island")
+	assert genIsland.listIndividualsforindividual(genfisher) == None
+	fishermaster = Individual("fisher master",standartinput[6],standartinput[7],genIsland)
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert genIsland.listIndividualsforindividual(fishermaster).index(genIndividual.getDetail())>=0 and genIsland.listIndividualsforindividual(fishermaster).index(genfisher.getDetail())>= 0   	
+	assert len(genIsland.listIndividualsforindividual(fishermaster)) == 2
+
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1),Defense("Defesa 2",10,10),Weapon("Weapon x",10,10)))])
+def test_removeIndividualPresente(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Fisher("random fisher",standartinput[3],standartinput[5],standartinput[4],None,"0")
+	genIsland = Island("Generic Island")
+	fishermaster = Fisher("fisher master",standartinput[3],standartinput[5],standartinput[4],genIsland,"0")
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert len(genIsland.individualsPresent) == 3
+	assert genIsland.removeIndividualPresente(genIndividual) == 1
+	assert len(genIsland.individualsPresent) == 2
+	assert genIsland.removeIndividualPresente(genfisher) == 1
+	assert len(genIsland.individualsPresent) == 1
+	assert genIsland.removeIndividualPresente(fishermaster) == 1
+	assert len(genIsland.individualsPresent) == 0
+
+
+@pytest.mark.parametrize("standartinput",[((100,100,100,100,Defense("Defesa 1",1,10),Weapon("Weapon",10,1)))])
+def test_getDetailofIndividual(standartinput):
+	genIndividual = Individual("random individual",standartinput[0],standartinput[1],standartinput[2])
+	genfisher = Fisher("random fisher",standartinput[3],standartinput[5],standartinput[4],None,"0")
+	genIsland = Island("Generic Island")
+	assert genIsland.getDetailofIndividual(None) == 0
+	fishermaster = Fisher("fisher master",standartinput[3],standartinput[5],standartinput[4],genIsland,"0")
+	assert genIsland.addIndividual(genIndividual) == 1
+	assert genIsland.addIndividual(genfisher) == 1
+	assert genIsland.getDetailofIndividual(genfisher) == genfisher.getDetail()
+	assert genIsland.getDetailofIndividual(genIndividual) == genIndividual.getDetail()
+	assert genIsland.getDetailofIndividual(fishermaster) == fishermaster.getDetail()
+
+
+
+def test_adddirection(standartinput):
+	pass
+
+def test_getdirection(standartinput):
+	pass
+
+def test_listdirections(standartinput):
+	pass
+
+def test_changeIndividualForOtherisland(standartinput):
+	pass
