@@ -54,6 +54,52 @@ def test_getItem(standartinput):
 		else:
 			assert genIsland.addItem(standartinput[i]) == 0
 			assert genIsland.getItem(standartinput[i]) == None
+
+@pytest.mark.parametrize("standartinput",[ (0,None,Defense("Defesa 1",10,10) ,Weapon("Weapon 1",10,10) , Medkit("Bandage",10)),(None,0,Defense("Defesa 4",10,10) ,Weapon("Weapon 5",10,10) , Medkit("Bandage 9",10) )])
+def test_getListItems(standartinput):
+	genIsland = Island("Gen Island")
+	vec = []
+	for i in range(len(standartinput)):
+		if(isinstance(standartinput[i],Item)):
+			assert genIsland.addItem(standartinput[i]) == 1
+			assert genIsland.getListItems().index(standartinput[i].getDetail()) >= 0
+		else:
+			assert genIsland.addItem(standartinput[i]) ==0
+			
+			
+@pytest.mark.parametrize("standartinput",[((Spell("Spell 1",10),Spell("Spell 2",9) , Spell("Spell 10",98)),(None,0,Defense("Defesa 1",10,2)))])			
+def test_addSpellIsland(standartinput):
+	genIsland = Island("Gen Island")
+	for i in range(len(standartinput)):
+		if(isinstance(standartinput,Spell)):
+			assert genIsland.addSpellIsland(standartinput[i]) == 1
+		else:
+			assert genIsland.addSpellIsland(standartinput[i]) == 0
+
+
+@pytest.mark.parametrize("standartinput",[((Spell("Spell 1",10),Spell("Spell 2",9) , Spell("Spell 10",98)),(None,0,Defense("Defesa 1",10,2)))])
+def test_getSpell(standartinput):
+	genIsland = Island("Gen Island")
+	for i in range(len(standartinput)):
+		if(isinstance(standartinput,Spell)):
+			assert genIsland.addSpellIsland(standartinput[i]) == 1
+			assert genIsland.getSpell() == standartinput[i]
+		else:
+			assert genIsland.addSpellIsland(standartinput[i]) == 0	
+			assert genIsland.getSpell() == None
+
+@pytest.mark.parametrize("standartinput",[((Spell("Spell 1",10),Spell("Spell 2",9) , Spell("Spell 10",98)),(None,0,Defense("Defesa 1",10,2)))])
+def test_statusSpell(standartinput):
+	genIsland = Island("Gen Island")
+	for i in range(len(standartinput)):
+		if(isinstance(standartinput,Spell)):
+			assert genIsland.addSpellIsland(standartinput[i]) == 1
+			assert genIsland.statusSpell() == 1
+			l = genIsland.getSpell()
+			assert genIsland.standartinput() == 0
+		else:
+			assert genIsland.addSpellIsland(standartinput[i]) == 0	
+			assert genIsland.statusSpell() == 0
 	
 	
 	
