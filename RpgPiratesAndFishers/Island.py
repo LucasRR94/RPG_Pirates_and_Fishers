@@ -228,23 +228,6 @@ class Island():
 			else:
 				return 0
 
-	# def attackIndividual(self,idIndividualAttacker,idIndividualDefender):
-	# 	"""
-	# 	This method provides attack on the defender, if the defender it is not a fisher then he will retaliate(atack
-	# 	the attacker), if any individual don't has life he will be eliminated, and all items will be trasnfer for the alive individual.
-		
-	# 	@param idIndividualAttacker: (object type individual) identifier of individual that will attack
-	# 	@param idIndividualDefender: (object type individual) identifier of individual that will be attacked
-		
-	# 	@return: (int) 1 if attack sucessful , 0 otherwise.
-	# 	"""
-	# 	attacker = self.getIndividual(idIndividualAttacker)
-	# 	if(attacker == None):
-	# 		return 0
-	# 	else:
-	# 		return attacker.attackEnemy(idIndividualDefender)
-
-
 
 	def getDetailofIndividual(self,idactualIndividual):
 		"""
@@ -252,62 +235,16 @@ class Island():
 		
 		@param idactualIndividual: (object type individual) id of the individual
 		
-		@return :(int,str)  1 and string that carrier the details of individual or 0 and None
+		@return :(int,str)  string that carrier the details of individual or 0 
 		"""
-		interstindividual = self.getIndividual(idactualIndividual)
-		return interstindividual.getDetail()
-
-	# def useItemBackPackFisher(self,actualfisher,choose):
-	# 	"""
-	# 	This method just call the method in the Fisher class, to use an item in the backpack
-		
-	# 	@param actualfisher :(object type fisher) fisher that will execute the change
-	# 	@param item:(str) is an refer to an obj present of backpack
-		
-	# 	@return :(int) 1 if sucessful, 0 otherwise
-	# 	"""
-	# 	interstFisher = self.getIndividual(actualfisher)
-	# 	if(type(interstFisher) != Fisher):
-	# 		return 0
-	# 	returnofmethod = interstFisher.useItemBackpack(choose)
-	# 	if(type(returnofmethod) == list):
-	# 		copy = returnofmethod[1]
-	# 		self.addItem(copy)
-	# 		return 1 
-	# 	else:
-	# 		return returnofmethod
-
-
-
-	# def collectSpellOnIsland(self,idactualFisher):
-	# 	"""
-	# 	This method transfer the object spell in the island for the Fisher
-
-	# 	@param actualFisher :id of object type Fisher that will colect the spell
-		
-	# 	@return : (int) 1 if sucessful, 0 otherwise
-	# 	"""
-	# 	intersFisher = self.getIndividual(idactualFisher)
-	# 	if(type(intersFisher) != Fisher):
-	# 		return 0
-	# 	if(self.statusSpell == 1):
-	# 		return intersFisher.collectSpell()
-
-
-	# def listItemsBackPack(self,actualFisher):
-	# 	"""
-	# 	This method list all the items of the backpack of actualFisher, thow calling the method on the fisher class
-
-	# 	@param actualFisher : id of object type Fisher the return the element on the backpack
-
-	# 	@return : (str) that will represent the backpack itens, or None
-	# 	"""
-	# 	interstFisher = self.getIndividual(actualfisher)
-	# 	if(type(interstFisher) != Fisher):
-	# 		return None
-
-	# 	return interstFisher.listItemBackpack()
-
+		if(isinstance(idactualIndividual,Individual)):
+			interstindividual = self.getIndividual(idactualIndividual.getName())
+			if(interstindividual!=None):
+				return interstindividual.getDetail()
+			else:
+				return 0
+		else:
+			return 0		
 
 	def adddirection(self,newisland,key):
 		"""
@@ -321,8 +258,21 @@ class Island():
 		"""
 		if(type(key) == str  and type(newisland) == Island):
 			if(key== "left" or key == "center" or key == "right" or key =="back"):
-				self.directions[key] = newisland
-				return 1	
+				try:
+					if(self.directions[key] == newisland):
+						return 0
+				except KeyError:		
+					self.directions[key] = newisland
+					if(key=="left"):
+						newisland.adddirection(self,"right")
+					elif(key=="right"):
+						newisland.adddirection(self,"left")
+					elif(key=="back"):
+						newisland.adddirection(self,"center")
+					elif(key =="center"):
+						newisland.adddirection(self,"back")
+
+					return 1	
 			else:
 				return 0
 		else:
@@ -334,7 +284,13 @@ class Island():
 		@param key : (str) a key that links with the obj
 		@return :(Island) return an obj type Island if exist the key, or None if does not exist
 		"""
-		return (self.directions[key])
+		value = 0
+		try :
+			value = self.directions[key]
+		except KeyError:
+			return None
+		else:
+			return value
 
 	def listdirections(self):
 		"""
@@ -342,7 +298,7 @@ class Island():
 		the conections(keys) on other islands(obj translated)
 		@param None:
 		@return :(array) of tuples strings (directions(keys type str) -> islands names(obj type island))
-		, if empty return None,None
+		, if empty return None
 		"""
 		if(len(self.directions) > 0):
 			answer = []
@@ -353,8 +309,8 @@ class Island():
 					answer.append(newtuple)
 			return answer
 		else:
-			answer = (None,None)
-			return answer
+			
+			return None
 	
 	def changeIndividualForOtherisland(self,presentindividual,newIsland):
 		"""
