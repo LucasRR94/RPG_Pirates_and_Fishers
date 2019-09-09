@@ -43,10 +43,13 @@ class Island():
 		@param newitem :(item) the item that will be add in the attribute itemisland
 		@return :(int) 1 if operation sucessed , 0 if fails
 			"""
-		if(isinstance(newitem,Item)):
-			self.itemisland.append(newitem)
-			return 1 
+		if(newitem != None):
+			if(isinstance(newitem,Item)):
+				self.itemisland.append(newitem)
+				return 1 
 
+			else:
+				return 0
 		else:
 			return 0
 	
