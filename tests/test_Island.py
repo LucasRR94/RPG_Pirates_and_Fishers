@@ -181,15 +181,67 @@ def test_getDetailofIndividual(standartinput):
 	assert genIsland.getDetailofIndividual(fishermaster) == fishermaster.getDetail()
 
 
-
+@pytest.mark.parametrize("standartinput",[(Island("Island 1"),"left",Island("Island 2"),"center",Island("Island 3"),"right",Island("Island 2"),"back"),(0,"left",Weapon("Weapon 2",10,10),"center",Defense("Defesa 1",10,10),"right",None,"back")])
 def test_adddirection(standartinput):
-	pass
+	genIsland = Island("Generic Island")
+	for i in range(0,8,2):
+		if(type(standartinput[i])==Island):
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 1
+			assert genIsland.directions[standartinput[i+1]].getName() == standartinput[i].getName()
+		else:
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 0
+			
+		
+	
 
+@pytest.mark.parametrize("standartinput",[(Island("Island 1"),"left",Island("Island 2"),"center",Island("Island 3"),"right",Island("Island 2"),"back"),(0,"left",Weapon("Weapon 2",10,10),"center",Defense("Defesa 1",10,10),"right",None,"back")])
 def test_getdirection(standartinput):
-	pass
+	genIsland = Island("Generic Island")
+	for i in range(0,8,2):
+		if(type(standartinput[i])==Island):
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 1
+			assert genIsland.directions[standartinput[i+1]].getName() == standartinput[i].getName()
+		else:
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 0
+	for i in range(0,8,2):
+		if(type(standartinput[i]) == Island):
+			assert genIsland.getdirection(standartinput[i+1]).getName() == standartinput[i].getName()
+		else:
+			assert genIsland.getdirection(standartinput[i+1]) == None
 
+
+@pytest.mark.parametrize("standartinput",[(Island("Island 1"),"left",Island("Island 2"),"center",Island("Island 3"),"right",Island("Island 2"),"back"),(0,"left",Weapon("Weapon 2",10,10),"center",Defense("Defesa 1",10,10),"right",None,"back")])
 def test_listdirections(standartinput):
-	pass
+	genIsland = Island("Generic Island")
+	assert genIsland.listdirections() == None
+	a = []
+	size = 0
+	for i in range(0,8,2):
+		if(type(standartinput[i])==Island):
+			size +=1
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 1
+			tuplei = (standartinput[i+1],standartinput[i].getName())
+			a.append(tuplei)
+			assert genIsland.listdirections().index(tuplei) >= 0 
+		else:
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 0
+	answer = genIsland.listdirections()
+	for i in range(size):
+		assert answer.index(a[i])>=0		
 
+@pytest.mark.parametrize("standartinput",[(Island("Island 1"),"left",Island("Island 2"),"center",Island("Island 3"),"right",Island("Island 2"),"back"),(0,"left",Weapon("Weapon 2",10,10),"center",Defense("Defesa 1",10,10),"right",None,"back")])
 def test_changeIndividualForOtherisland(standartinput):
-	pass
+	simplew = Weapon("generic weapon",10,10)
+	simpleD = Defense("generic defense",1,1)
+	genIsland = Island("generic Island")
+	genFisher = Fisher("generic fisher",100,simplew,simpleD,genIsland,"0")
+	islandconter = ""
+	for i in range(0,8,2):
+		if(type(standartinput[i]) == Island):
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 1
+			assert genIsland.changeIndividualForOtherisland(genIsland.getIndividual(genFisher.getName()),standartinput[i]) == 1
+			assert standartinput[i].listIndividuals().index(genFisher.getDetail()) >= 0
+			assert standartinput[i].changeIndividualForOtherisland(genFisher,genIsland) == 1
+			assert standartinput[i].listIndividuals() == None
+		else:
+			assert genIsland.adddirection(standartinput[i],standartinput[i+1]) == 0
