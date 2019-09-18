@@ -135,7 +135,8 @@ def genMap():
 	
 	@param None
 	
-	@return : dictionary of islands, that are index by the name island +("0" ..."10"), eleven in total
+	@return : dictionary of islands, that are index by the name island +("0" ..."10"), 
+	eleven in total, and total amount of value of the spells inserted on islands
 	"""  
 	Mapgenerate = {} # the entire map generated
 	
@@ -184,6 +185,8 @@ def genMap():
 	Mapgenerate["island 10"] = island10
 	
 	cont = 4
+	totalValueofSpells = 0
+	totalValueofSpells += genSpellforIsland(2).getValue()
 	island0.addSpellIsland(genSpellforIsland(2))
 	island0.addItem(genenerateItemsToIsland(1))
 	island0.addItem(genenerateItemsToIsland(cont%14))
@@ -194,6 +197,7 @@ def genMap():
 	island0.adddirection(island3,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(1).getValue()
 	island1.addSpellIsland(genSpellforIsland(1))
 	island1.addItem(genenerateItemsToIsland(2))
 	island1.addItem(genenerateItemsToIsland(cont%14))
@@ -204,6 +208,7 @@ def genMap():
 	island1.adddirection(island0,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(4).getValue()
 	island2.addSpellIsland(genSpellforIsland(4))
 	island2.addItem(genenerateItemsToIsland(1))
 	island2.addItem(genenerateItemsToIsland(cont%14))
@@ -213,6 +218,7 @@ def genMap():
 	island2.adddirection(island3,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(1).getValue()
 	island3.addSpellIsland(genSpellforIsland(1))
 	island3.addItem(genenerateItemsToIsland(3))
 	island3.addItem(genenerateItemsToIsland(cont%14))
@@ -223,6 +229,7 @@ def genMap():
 	island3.adddirection(island10,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(3).getValue()
 	island4.addSpellIsland(genSpellforIsland(3))
 	island4.addItem(genenerateItemsToIsland(1))
 	island4.addItem(genenerateItemsToIsland(cont%14))
@@ -233,6 +240,7 @@ def genMap():
 	island4.adddirection(island10,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(1).getValue()
 	island5.addSpellIsland(genSpellforIsland(1))
 	island5.addItem(genenerateItemsToIsland(2))
 	island5.addItem(genenerateItemsToIsland(cont%14))
@@ -243,6 +251,7 @@ def genMap():
 	island5.adddirection(island8,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(2).getValue()
 	island6.addSpellIsland(genSpellforIsland(2))
 	island6.addItem(genenerateItemsToIsland(3))
 	island6.addItem(genenerateItemsToIsland(cont%14))
@@ -253,6 +262,7 @@ def genMap():
 	island6.adddirection(island5,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(3).getValue()
 	island7.addSpellIsland(genSpellforIsland(3))
 	island7.addItem(genenerateItemsToIsland(1))
 	island7.addItem(genenerateItemsToIsland(cont%14))
@@ -262,6 +272,7 @@ def genMap():
 	island7.adddirection(island8,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(4).getValue()
 	island8.addSpellIsland(genSpellforIsland(4))
 	island8.addItem(genenerateItemsToIsland(1))
 	island8.addItem(genenerateItemsToIsland(cont%14))
@@ -272,6 +283,7 @@ def genMap():
 	island8.adddirection(island10,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(1).getValue()
 	island9.addSpellIsland(genSpellforIsland(1))
 	island9.addItem(genenerateItemsToIsland(3))
 	island9.addItem(genenerateItemsToIsland(cont%14))
@@ -281,6 +293,7 @@ def genMap():
 	island9.adddirection(island4,"back")
 	
 	cont+=1
+	totalValueofSpells += genSpellforIsland(2).getValue()
 	island10.addSpellIsland(genSpellforIsland(2))
 	island10.addItem(genenerateItemsToIsland(2))
 	island10.addItem(genenerateItemsToIsland(cont%14))
@@ -289,6 +302,8 @@ def genMap():
 	island10.adddirection(island3,"right")
 	island10.adddirection(island8,"left")
 	
-	
-	return Mapgenerate
+	finalanswer = []
+	finalanswer.append(Mapgenerate)
+	finalanswer.append(totalValueofSpells)
+	return (finalanswer)
 
