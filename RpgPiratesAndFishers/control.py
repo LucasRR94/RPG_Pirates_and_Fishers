@@ -93,56 +93,55 @@ def perform_instruction(parameter_instruction,fisher,option):
 	"""
 	This function perform the instruction of the client in the map, returning the response for the action
 
-	@param parameter_instruction:(array of objects) array of objects that are parameter for method  
+	@param parameter_instruction:(array of objects) array of objects that are parameter for method used in fisher
 	@param fisher:(object fisher) fisher that will execute the method
 	@param option:(int) integer that represent the option of the instruction
 
-	@return,(string) the result of the instruction on the game
+	@return:(string) the result of the instruction on the game
 	"""
 
-	if(option==1): 
+	if(option==0): 
 		return(fisher.listItemBackpack())
 	
-	elif(option==2): 
+	elif(option==1): 
 		return(fisher.useItemBackpack(parameter_instruction[0]))
 
-	elif(option==3): 
+	elif(option==2): 
 		return(fisher.collectItem(parameter_instruction[0]))
 
-	elif(option==4): 
+	elif(option==3): 
 		return(fisher.listItemsfromIsland())
 
-	elif(option==5): 
+	elif(option==4): 
 		return(fisher.dropItems())
-		
-		
-	elif(option==6): 
-		return(fisher.dropSpells())
 
-	elif(option==7): 
+	elif(option==5): 
 		return(fisher.getinfoaboutSpellonIsland())
 
-	elif(option==8): 
-		return(fisher.changeIsland(vetorinstrucao[1]))
+	elif(option==6): 
+		return(fisher.changeIsland(vetorinstrucao[0]))
 
-	elif(option==9): 
+	elif(option==7): 
 		return(fisher.getDirectionsfromIsland())
 		
-	elif(option==10): 
+	elif(option==8): 
 		return(fisher.collectSpell())
 
-	elif(option==11):	
+	elif(option==9):	
 		return(fisher.attackEnemy(vetorinstrucao[0]))
 
-	elif(option==12):
+	elif(option==10):
 		return(fisher.listenemies())
 
-	elif(option==13):	
+	elif(option==11):	
 		return(fisher.getDetail())
+
 
 if __name__ == "__main__":
 	main_fishers = {}
+	global totalspells
 	mainmap,totalspells  = genMap() # is declared a map
+	
 	resposta = insertIntoMap("Brave fisher",0,0,0,mainmap,"0.0.0.0",main_fishers)
 	mainmap = resposta[0]
 	fisher = resposta[1]
