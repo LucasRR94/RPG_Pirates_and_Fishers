@@ -89,14 +89,14 @@ def insertIntoMap(nameFisher,health,itemAttack,itemDefense,objectMap,ip_adress,d
 			final.append(randomFisher)
 			return final # return the final array
 
-def perform_instruction(parameter_instruction,fisher,option):
+def perform_instruction(parameter_instruction,fisher,option,dict_fisher):
 	"""
 	This function perform the instruction of the client in the map, returning the response for the action
 
-	@param parameter_instruction:(array of objects) array of objects that are parameter for method used in fisher
+	@param parameter_instruction:(str) paremeter for a method 
 	@param fisher:(object fisher) fisher that will execute the method
 	@param option:(int) integer that represent the option of the instruction
-
+	@param dict_fisher: (dict) contains a dictionary of all fishers present on the game
 	@return:(string) the result of the instruction on the game
 	"""
 
@@ -104,10 +104,10 @@ def perform_instruction(parameter_instruction,fisher,option):
 		return(fisher.listItemBackpack())
 	
 	elif(option==1): 
-		return(fisher.useItemBackpack(parameter_instruction[0]))
+		return(fisher.useItemBackpack(parameter_instruction))
 
 	elif(option==2): 
-		return(fisher.collectItem(parameter_instruction[0]))
+		return(fisher.collectItem(parameter_instruction))
 
 	elif(option==3): 
 		return(fisher.listItemsfromIsland())
@@ -119,7 +119,7 @@ def perform_instruction(parameter_instruction,fisher,option):
 		return(fisher.getinfoaboutSpellonIsland())
 
 	elif(option==6): 
-		return(fisher.changeIsland(vetorinstrucao[0]))
+		return(fisher.changeIsland(parameter_instruction))
 
 	elif(option==7): 
 		return(fisher.getDirectionsfromIsland())
@@ -127,8 +127,10 @@ def perform_instruction(parameter_instruction,fisher,option):
 	elif(option==8): 
 		return(fisher.collectSpell())
 
-	elif(option==9):	
-		return(fisher.attackEnemy(vetorinstrucao[0]))
+	elif(option==9):
+		action = fisher.attackEnemy(parameter_instruction)	
+		eliminate_fisher_deads(dict_fisher,parameter_instruction)
+		return(action)
 
 	elif(option==10):
 		return(fisher.listenemies())
@@ -136,13 +138,149 @@ def perform_instruction(parameter_instruction,fisher,option):
 	elif(option==11):	
 		return(fisher.getDetail())
 
+	elif(option==12):
+		return(disconnect_player(fisher.getName(),dict_fisher,fisher))
+
+def disconnect_player(name_player,dict_fisher,fish_obj):
+	"""
+	This function, disconnect the Fisher of the game.If correct is return 1, else 0.
+	@param name_player:(str) that is the key for the dictionary of the fishers
+	@param dict_fisher:(dictionary of fishers) dictionary of fishers in the game
+	@param fish_obj: (object type fisher) fisher that wants to disconect from the game
+	@return: 1 if disconect, 0 otherwise
+	"""
+	answer1 = 0
+	answer1 = fish_obj.disconect_fisher_island()
+	answer1+= eliminate_fisher_deads(dict_fishers,name_player)
+	return answer1
+def count_number_fishers_alive(dict_fishers,gamerunning):
+	"""
+	This function , count the number of fishers alive in th e island, if is 1, he catch 
+	the number, and form a message of the winner, otherwise ,return 0
+	
+	@param dict_fishers:(dictionary of fishers objects) a dictionary of all the fishers present on game
+	@param gamerunning:(int) indicate if the number of players is bigger or equal 2(1), and gamming is runing
+	,otherwise game waits for beggin(0).
+	
+	@return:(str or int), a message with the winner game, or 0
+	"""
+	if(gamerunning == 1):
+		if(len(dict_fishers) > =2):
+			return 0	
+		elif(len(dict_fishers) == 1):
+			answer = ""
+			for key, objfisher in dict_fishers.iteritems():
+				answer = objfisher.getName()
+			return "The winner of game section is "+answer+" , Congratulations!!!, the game is over!!!\n"
+		elif(len(dict_fishers) == 0):
+			return "Sorry all the players are dead, more luck in the next round, ;) \n"
+	else:
+		return 0
+
+def check_fisher_live(fisher_test):
+	"""
+	This function is testing, if a object type fisher is live, if name , getValueDefense and getValueAttack,  is not None, or ''
+	If the conditions None or '' are found, the function return 0, otherwise 1
+	@param fisher_test:(object type Fisher) object type fisher that will be tested, for be alive or dead
+	@return:(int) 0 if dead, 1 if is alive, None if the object is not Fisher.
+	"""
+	if(type(fisher_test) == Fisher):
+		if(fisher_test.getName() == '' and fisher_test.getValueDefense() == None and fisher_test.getValueAttack()==None):
+			return 0
+		else:
+			return 1
+	else:
+		return None
+
+def eliminate_fisher_deads(dict_fishers,name_fisher):
+	"""
+	This function, check for a specific fisher, if he is dead, he the object is eliminated, and change for "None"
+	@param dict_fishers:(dict of fishers) contains all the fisher present on the game
+	@param name_fisher:(str) the key for the fisher on the game
+	@return: 1 if eliminate object fisher dead, 0 otherwise, error to find or fisher alive
+	"""
+	try:
+		obj_fisher_test = dict_fishers[name_fisher]
+	except KeyError:
+		return 0
+	else:
+		if(check_fisher_live(obj_fisher_test)==0):
+			dict_fishers[name_fisher] = None
+			dict_fishers.pop(name_fisher)
+			return 1
+		else:
+			return 0
+
+def create_context_map():
+	"""
+	This function create the map of the game, and return a dict of Fishers present.The map is composed
+	by a array , of total dict of islands and totalspells values present on the map.
+	@param None
+	@return: array([[dict of Islands objects,total value speels(int)],dict of fishers present])
+	"""
+	total_fishers = {}
+	answer = []
+	answer.append(genMap())# is declared a map
+	answer.append(total_fishers)
+	return answer
 
 if __name__ == "__main__":
 	main_fishers = {}
-	global totalspells
-	mainmap,totalspells  = genMap() # is declared a map
-	
-	resposta = insertIntoMap("Brave fisher",0,0,0,mainmap,"0.0.0.0",main_fishers)
-	mainmap = resposta[0]
-	fisher = resposta[1]
+#	global totalspells
+	first = create_context_map()
+	mainmap,totalspells = first[0]
+	fishers_on_game = first[1]
+#	global locks_islands 
+	locks_islands = []
+	### One lock for each island###
+#	for i in range(len(mainmap)):
+#		locks_islands.append(threading.Lock())
+	###-------------------------###	
+#	m = thread_player(1)
+#	m.start()	
+	simple12 = Weapon("simpl1",10,10)
+	simpl22 = Defense("simpl1",10,10)
+	#fish1 = insertIntoMap()
+	fish1  = Fisher("Brave fisher",100,simple12,simpl22,mainmap["island 0"],'0')
+	fishers_on_game["Brave fisher"] = fish1
+	simple1 = Weapon("simpl1",1,1)
+	simpl2 = Defense("simpl1",1,1)
+	fish11 = Fisher("Looser 1",1,simple1,simpl2,mainmap["island 0"],'0')
+	fishers_on_game["Looser 1"] = fish11
+	#print(fish11.getDetail())
+	a = mainmap["island 0"].listIndividuals()
+	for i in range(len(a)):
+		print(a[i])
+	answer = perform_instruction("Looser 1",fish1,9,fishers_on_game) 	
+	#answer = fish1.attackEnemy("Looser 1")
+	a = mainmap["island 0"].listIndividuals()
+	for i in range(len(a)):
+		print(a[i])
+	if(answer == 1):
+		print("ok")
+		if(fish11.getName() == ''):
+			print("Looser is dead")
+			#answer = fish1.attackEnemy("Intern pirate")
+			#a = mainmap["island 0"].listIndividuals()
+			#for i in range(len(a)):
+			#	print(a[i])
+			#print(fish11.getNamelocation())
+			if(check_fisher_live(fish11) == 1):
+				print("Brave fisher is dead!!")
+			print(len(mainmap["island 0"].individualsPresent))
+			print(fish11.getDetail())
+			try: 
+				a =fishers_on_game["Looser 1"]
+			except KeyError:
+				print("Looser 1 is dead")
+			else:
+				print("fim")
+			
+			fish11 = fishers_on_game["Brave fisher"]
+			print(fish11.getDetail())
+			
+		# else:
+		# 	print(fish11.getDetail())
+	else:
+		print("Error")
 	
