@@ -104,7 +104,17 @@ class Island():
 		@return:(int) 1 if operation sucesfull, 0 otherwise
 		"""
 		if(type(newspell) is Spell):
-			self.spellisland = newspell
+			if(self.spellisland!=None):
+				if(type(self.spellisland) is list):
+					self.spellisland.append(newspell)
+				else:
+					backup = []
+					backup.append(self.spellisland)
+					backup.append(newspell)
+					self.spellisland = backup
+
+			else:
+				self.spellisland = newspell
 			return 1
 		else:
 			return 0
@@ -117,15 +127,24 @@ class Island():
 		@return:(Spell) return an object type Spell if exist, otherwise return None 
 		"""		
 		if(self.spellisland != None):
-			backup = self.spellisland
-			self.spellisland = None
-			return backup
+			if(type(self.spellisland) == list):
+				if(len(self.spellisland)>0):
+					backup = []
+					backup = self.spellisland
+					self.spellisland = None
+					return backup
+				else
+					return None
+			else
+				answer = self.spellisland
+				self.spellisland = None
+				return answer
 		else:
 			return None
 
 	def statusSpell(self):
 		"""
-		this method informs if has some Spell obj present that can be collect, if exist return 1, otherwise return 0
+		this method informs if has some Spell obj present that can be collect or array of Spells, if exist return 1, otherwise return 0
 		@param None:
 		@return :(int) 1 if exist the Spell obj , 0 otherwise
 		"""	
@@ -133,6 +152,14 @@ class Island():
 			return 0
 		elif(type(self.spellisland) == Spell):
 			return 1
+		elif(type(self.spellisland) is list):
+			if(len(self.spellisland)>0):
+				if(type(self.spellisland[0]) is Spell):
+					return 1
+				else:
+					return 0
+			else:
+				return 0
 		else:
 			return 0
 
@@ -327,5 +354,5 @@ class Island():
 		else:
 			return 0	
 	
-	
+
 	
