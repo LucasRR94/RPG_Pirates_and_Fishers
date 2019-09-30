@@ -261,7 +261,7 @@ class Fisher(Individual):
 		valuehealth = itemmedkit.useHealing()
 		return (super().usingMedkit(valuehealth))
 
-	# not tested, and be construction ------
+	
 
 	def collectItem(self,referenameitem):
 		"""
@@ -405,6 +405,7 @@ class Fisher(Individual):
 		@param None:
 		@return :(int) "Sucess on collect spell" if sucessfull colect, "Fail in collect spell" otherwise
 		"""
+		backup = 0
 		spellcolect = self.actualisland.getSpell()
 		if(spellcolect != None):
 			if(type(spellcolect)==Spell):
@@ -412,7 +413,21 @@ class Fisher(Individual):
 					return "Sucess on collect spell\n"
 				else:
 					return "Fail in collect spell\n"
-				
+			elif(type(spellcolect) is list):
+				backup = len(spellcolect)
+				if(len(spellcolect) > 0):
+					cont = 0
+					for i in range(len(spellcolect)):
+						cont += self.__addspell(spellcolect[i])
+					if(cont > 0):
+						if(cont == backup):
+							return "Sucess on collect spell\n"
+						else:
+							return "Some sucess, some fail in collect spells\n"
+					else:
+						return "Fail in collect spells\n"	
+				else:	
+					return "Fail in collect spell\n"
 			else:
 				return "Fail in collect spell\n"
 		else:
@@ -484,7 +499,7 @@ class Fisher(Individual):
 					result2 = 0
 					individualForAttack.getDamage(self.getValueAttack())
 					location = self.getactualIsland()
-					if(individualForAttack.getHealth() == None): #is death
+					if(individualForAttack.getHealth() == None): #is dead
 						ItemsSpellsenemy = individualForAttack._takeItemsandSpellsDeathplayer()	
 						if(ItemsSpellsenemy != None):
 							items = ItemsSpellsenemy.pop(0)
@@ -555,4 +570,39 @@ class Fisher(Individual):
 		if(partialResult1 != None):
 			partialResult+=partialResult1
 
-		return partialResult	
+		return partialResult
+
+	def disconect_fisher_island(self):
+		"""
+		This method, is responsible to drop items and spells on the island, return 1 if succeed , 0 otherwise.
+		@param None:
+		@return :(int) 1 if succeed , 0 otherwise
+		"""
+		actualposition = self.getactualIsland()
+		if(len(self.backpack) > 0):
+			for i in range(self.backpack):
+				actualposition.addItem(self.backpack[i])
+			self.backpack = None
+			self.backpack = []
+			randomWeapon = Weapon("randomweapon",1,1)
+			randomDefense = Defense("randomDefense",1,1)
+			if(self.addItemBackpack(randomWeapon)  == 1):
+				if(self.addItemBackpack(randomDefense) == 1):
+					if(self.useItemBackpack(randomweapon.getName()) == 1):
+						if(self.useItemBackpack(randomDefense.getName())==1):
+							for i in range(self.backpack):
+								actualposition.addItem(self.backpack[i])
+								spells_drop = self.dropSpells()
+								for j in range(len(spells_drop)):
+									actualposition.addSpellIsland(spells_drop[i])
+								actualposition.removeIndividualPresente(self)	
+								self.__del__()
+								return 1	
+						else:
+							return 0
+					else:
+						return 0
+				else:
+					return 0
+			else:
+				return 0
