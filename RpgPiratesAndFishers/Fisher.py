@@ -579,30 +579,21 @@ class Fisher(Individual):
 		@return :(int) 1 if succeed , 0 otherwise
 		"""
 		actualposition = self.getactualIsland()
+		actualposition.addItem(self.getDefense())
+		actualposition.addItem(self.getWeapon())
+		self.itemattack =self.itemdefense = None
 		if(len(self.backpack) > 0):
-			for i in range(self.backpack):
+			for i in range(len(self.backpack)):
 				actualposition.addItem(self.backpack[i])
-			self.backpack = None
-			self.backpack = []
-			randomWeapon = Weapon("randomweapon",1,1)
-			randomDefense = Defense("randomDefense",1,1)
-			if(self.addItemBackpack(randomWeapon)  == 1):
-				if(self.addItemBackpack(randomDefense) == 1):
-					if(self.useItemBackpack(randomweapon.getName()) == 1):
-						if(self.useItemBackpack(randomDefense.getName())==1):
-							for i in range(self.backpack):
-								actualposition.addItem(self.backpack[i])
-								spells_drop = self.dropSpells()
-								for j in range(len(spells_drop)):
-									actualposition.addSpellIsland(spells_drop[i])
-								actualposition.removeIndividualPresente(self)	
-								self.__del__()
-								return 1	
-						else:
-							return 0
-					else:
-						return 0
-				else:
-					return 0
-			else:
-				return 0
+			backpack = None
+		if(self.spellcontainer!=None):
+			if(len(self.spellcontainer) > 0):
+				for j in self.dropSpells():
+					actualposition.addSpellIsland(j)
+		if(actualposition.removeIndividualPresente(self)== 1):
+			self.__del__()
+			return 1
+		else:
+			self.__del__()
+			return 0	
+		

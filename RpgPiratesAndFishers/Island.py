@@ -133,9 +133,9 @@ class Island():
 					backup = self.spellisland
 					self.spellisland = None
 					return backup
-				else
+				else:
 					return None
-			else
+			else:
 				answer = self.spellisland
 				self.spellisland = None
 				return answer
