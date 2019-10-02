@@ -348,7 +348,7 @@ class Fisher(Individual):
 		"""
 		this method informed if have some spell present on the island, if exist return 1, otherwise return 0
 		@param None:
-		@return :(int) return 1 case exist spell on the island, otherwise return 0
+		@return :(int) return "Spells available in island" case exist spell on the island, otherwise return "No spell present on the island"
 		""" 
 		if(self.actualisland.statusSpell()  != 0):
 			return "Spells available in island"
@@ -582,14 +582,16 @@ class Fisher(Individual):
 		actualposition.addItem(self.getDefense())
 		actualposition.addItem(self.getWeapon())
 		self.itemattack =self.itemdefense = None
-		if(len(self.backpack) > 0):
-			for i in range(len(self.backpack)):
-				actualposition.addItem(self.backpack[i])
-			backpack = None
+		if(self.backpack!=None):
+			if(len(self.backpack) > 0):
+				for i in range(len(self.backpack)):
+					actualposition.addItem(self.backpack[i])
+				backpack = None
 		if(self.spellcontainer!=None):
-			if(len(self.spellcontainer) > 0):
-				for j in self.dropSpells():
-					actualposition.addSpellIsland(j)
+			if(self.spellcontainer!=None):
+				if(len(self.spellcontainer) > 0):
+					for j in self.dropSpells():
+						actualposition.addSpellIsland(j)
 		if(actualposition.removeIndividualPresente(self)== 1):
 			self.__del__()
 			return 1
