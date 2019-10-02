@@ -113,7 +113,6 @@ def perform_instruction(parameter_instruction,fisher,option,dict_fisher):
 	@param dict_fisher: (dict) contains a dictionary of all fishers present on the game
 	@return:(string) the result of the instruction on the game
 	"""
-
 	if(option==0): 
 		return(fisher.listItemBackpack())
 	
@@ -154,6 +153,9 @@ def perform_instruction(parameter_instruction,fisher,option,dict_fisher):
 
 	elif(option==12):
 		return(disconnect_player(fisher.getName(),dict_fisher,fisher))
+	
+	else:
+		return None
 
 def disconnect_player(name_player,dict_fisher,fish_obj):
 	"""
@@ -172,6 +174,7 @@ def disconnect_player(name_player,dict_fisher,fish_obj):
 			return 0
 	else:
 		return 0
+
 def count_number_fishers_alive(dict_fishers,gamerunning):
 	"""
 	This function , count the number of fishers alive in the  island, if is 1 the number of players 
@@ -219,17 +222,20 @@ def eliminate_fisher_deads(dict_fishers,name_fisher):
 	@param name_fisher:(str) the key for the fisher on the game
 	@return: 1 if eliminate object fisher dead, 0 otherwise, error to find or fisher alive
 	"""
-	try:
-		obj_fisher_test = dict_fishers[name_fisher]
-	except KeyError:
-		return 0
-	else:
-		if(check_fisher_live(obj_fisher_test)==0):
-			dict_fishers[name_fisher] = None
-			dict_fishers.pop(name_fisher)
-			return 1
-		else:
+	if(type(dict_fishers) is dict):
+		try:
+			obj_fisher_test = dict_fishers[name_fisher]
+		except KeyError:
 			return 0
+		else:
+			if(check_fisher_live(obj_fisher_test)==0):
+				dict_fishers[name_fisher] = None
+				dict_fishers.pop(name_fisher)
+				return 1
+			else:
+				return 0
+	else:
+		return 0
 
 def create_context_map():
 	"""
