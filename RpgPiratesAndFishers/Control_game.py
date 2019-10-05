@@ -247,7 +247,7 @@ def create_context_map():
 	total_fishers = {}
 	answer = []
 	answer.append(genMap())# is declared a map
-	answer.append(total_fishers)
+	answer.append(total_fishers) # is declared the dictionary of fishers
 	return answer
 
 if __name__ == "__main__":
