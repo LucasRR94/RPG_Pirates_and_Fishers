@@ -162,16 +162,73 @@ def check_signing_cyphertext(crypto_enter,signing_message,cypher_text):
 	if(type(crypto_enter) == list and type(cypher_text) == bytes and type(signing_message) == bytes):
 		if(crypto_enter[0] == 'RSA' or crypto_enter[0] == 'rsa'):
 			if(crypto_enter[2]==1):
-				if(type(crypto_enter[1]) ==cryptography.hazmat.backends.openssl.rsa._RSAPublicKey):
-					try:
-						test = crypto_enter[1].verify(signing_message,cypher_text,padding.PSS(mgf = padding.MGF1(hashes.SHA256()),salt_lenght = padding.PSS.MAX_LENGHT),hashes.SHA256())
-					except InvalidSignature:
-						return 0
-					else :
-						return 1
-				else:
+				try:
+					test = crypto_enter[1].verify(signing_message,cypher_text,padding.PSS(mgf = padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+				except InvalidSignature:
 					return 0
+				else :
+					return 1
 			else:
 				return 0
 	else:
 		return 0
+
+def generate_aes_256_key():
+	"""
+	This function generate a AES 256 bits long, using the package crypthography.
+	@param None
+	@return: (list[object,key_of_aes]) return a 256 bytes AES key and object AES, or 0 
+	"""
+	try:
+		key_dec_enc = os.urandom(32)
+		mode_vec = os.urandom(16)
+		backend = default_backend()
+		cipher = Cipher(algorithms.AES(key_dec_enc),modes.CBC(mode_vec),backend = backend)
+	except:
+		return 0
+	
+	else:
+		answer = []
+		answer.append(key_dec_enc)
+		answer.append(cipher)
+		return answer
+
+def generate_private_RSA_key():
+	"""
+	This function generate a private RSA key, using the package cryptography
+	@param None
+	@return : (obj rsa._RSAPrivateKey) object type RSA private, or 0
+	"""
+	try:
+		answer = rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())
+	except:
+		return 0
+	else:
+		return answer
+
+def deserialize_key_RSA(pem_format_key):
+	"""
+	This function deserialize a public key RSA, in PEM formar
+	@param pem_format_key : (bytes - pem type) pem key, in bytes
+	@return : (object public key RSA or 0) object public key or 0 
+	"""
+	try:
+		public_key = serialization.load_pem_public_key(pem_format_key,backend = default_backend())
+	except:
+		return 0
+	else:
+		return public_key
+
+def serialize_key_RSA(public_key):
+	"""
+	This function serialize a public key, with the objective to send to the receptor
+	@param public_key: (Object type rsa._RSAPublicKey) it's a public key, that will
+	be send thow network
+	return :(PEM, bytes fomat) a format of send encryption keys, or 0.
+	"""
+	try:
+		pem_format = public_key.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo)
+	except:
+		return 0	
+	else:
+		return pem_format
