@@ -93,15 +93,52 @@ def test_signing_cyphertext(standartinput):
 	for i in range(3):
 		crypto_enter.append(standartinput[i])
 	if(standartinput[2] == 2):
-	 	assert type(signing_cyphertext(crypto_enter,standartinput[3])) == bytes
+	 	assert type(signing_cyphertext(crypto_enter,standartinput[3])) == bytes 	
 	else:
 	 	assert signing_cyphertext(crypto_enter,standartinput[3]) == 0
 	 	crypto_enter.pop(2)
 	 	crypto_enter.append(2)
 	 	assert signing_cyphertext(crypto_enter,standartinput[3]) == 0
-	
-def test_check_signing_cyphertext():
-	pass
+
+@pytest.mark.parametrize("standartinput",[('rsa',rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend()), 2,os.urandom(245) ),('aes',os.urandom(32),0,os.urandom(1024)),('rsa',((rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())).public_key()) , 1,os.urandom(245))])	
+def test_check_signing_cyphertext(standartinput):
+	crypto_enter = []
+	for i in range(3):
+		crypto_enter.append(standartinput[i])
+	if(standartinput[2] == 2):
+		answer = signing_cyphertext(crypto_enter,standartinput[3])
+		assert type(answer) == bytes
+		crypto_enter = []
+		for i in range(2):
+			if(i==1):
+				crypto_enter.append(standartinput[i].public_key())
+			else:
+				crypto_enter.append(standartinput[i])
+		crypto_enter.append(1) # for signing has to be public
+		assert check_signing_cyphertext(crypto_enter,answer,standartinput[3]) == 1
+	else:
+		assert signing_cyphertext(crypto_enter,standartinput[3]) == 0
+		assert check_signing_cyphertext(crypto_enter,signing_cyphertext(crypto_enter,standartinput[3]),standartinput[3]) == 0
+		crypto_enter.pop(2)
+		crypto_enter.append(2)
+		assert signing_cyphertext(crypto_enter,standartinput[3]) == 0
+		assert check_signing_cyphertext(crypto_enter,signing_cyphertext(crypto_enter,standartinput[3]),standartinput[3]) == 0
+
+@pytest.mark.parametrize("standartinput",[(1,rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())),((2,(rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())).public_key()))])
+def test_serialize_key_RSA(standartinput):
+	if(standartinput[0] == 2):
+		assert type(serialize_key_RSA(standartinput[1])) == bytes
+	else:
+		assert type(serialize_key_RSA(standartinput[1])) ==int
 
 
-
+@pytest.mark.parametrize("standartinput",[(1,rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())),((2,(rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())).public_key()))])
+def test_deserialize_key_RSA(standartinput):
+	if(standartinput[0] == 2):
+		assert type(serialize_key_RSA(standartinput[1])) == bytes
+		temp_pemformat = serialize_key_RSA(standartinput[1])
+		print(temp_pemformat)
+		backup = deserialize_key_RSA(temp_pemformat)
+		assert backup.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo) == temp_pemformat 
+	else:
+		assert type(deserialize_key_RSA(standartinput[1])) == int
