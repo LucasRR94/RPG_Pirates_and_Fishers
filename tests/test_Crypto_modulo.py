@@ -137,8 +137,22 @@ def test_deserialize_key_RSA(standartinput):
 	if(standartinput[0] == 2):
 		assert type(serialize_key_RSA(standartinput[1])) == bytes
 		temp_pemformat = serialize_key_RSA(standartinput[1])
-		print(temp_pemformat)
 		backup = deserialize_key_RSA(temp_pemformat)
 		assert backup.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo) == temp_pemformat 
 	else:
 		assert type(deserialize_key_RSA(standartinput[1])) == int
+
+
+def test_generate_aes_256_key():
+	gen_key = generate_aes_256_key()
+	assert type(gen_key) == list
+	assert type(gen_key[1]) == Cipher
+	assert type(gen_key[0]) == bytes
+	
+
+def test_generate_private_RSA_key():
+	key_rsa = generate_private_RSA_key()
+	p_key_rsa = key_rsa.public_key()
+	assert key_rsa.key_size == 4096
+	assert p_key_rsa.key_size == 4096
+	
