@@ -197,7 +197,7 @@ def generate_private_RSA_key():
 	"""
 	This function generate a private RSA key, using the package cryptography
 	@param None
-	@return : (obj rsa._RSAPrivateKey) object type RSA private, or 0
+	@return : (obj rsa._RSAPrivateKey or 0) object type RSA private, or 0
 	"""
 	try:
 		answer = rsa.generate_private_key(public_exponent=65537,key_size=4096,backend=default_backend())
