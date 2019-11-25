@@ -113,46 +113,46 @@ def perform_instruction(parameter_instruction,fisher,option,dict_fisher):
 	@param dict_fisher: (dict) contains a dictionary of all fishers present on the game
 	@return:(string) the result of the instruction on the game
 	"""
-	if(option==0): 
-		return(fisher.listItemBackpack())
+	if(option==0): #LIFF - list items from Fisher
+		return(fisher.listItemBackpack()) 
 	
-	elif(option==1): 
-		return(fisher.useItemBackpack(parameter_instruction))
+	elif(option==1): #USEI - use item back
+		return(fisher.useItemBackpack(parameter_instruction)) pack
 
-	elif(option==2): 
-		return(fisher.collectItem(parameter_instruction))
+	elif(option==2): #CATI - Catch item
+		return(fisher.collectItem(parameter_instruction)) 
 
-	elif(option==3): 
-		return(fisher.listItemsfromIsland())
+	elif(option==3): #LSTI - list items from island
+		return(fisher.listItemsfromIsland()) 
 
 	elif(option==4): 
 		return(fisher.dropItems())
 
-	elif(option==5): 
-		return(fisher.getinfoaboutSpellonIsland())
+	elif(option==5): # GETS - get info about spells on actual island
+		return(fisher.getinfoaboutSpellonIsland()) 
 
-	elif(option==6): 
+	elif(option==6): #MOVF - move for other island
 		return(fisher.changeIsland(parameter_instruction))
 
-	elif(option==7): 
-		return(fisher.getDirectionsfromIsland())
+	elif(option==7): #DIRI - possible directions Islands
+		return(fisher.getDirectionsfromIsland()) 
 		
-	elif(option==8): 
-		return(fisher.collectSpell())
+	elif(option==8): #CATS - catch  Spell
+		return(fisher.collectSpell()) 
 
-	elif(option==9):
-		action = fisher.attackEnemy(parameter_instruction)
+	elif(option==9): #ATQE - Attack Enemie.
+		action = fisher.attackEnemy(parameter_instruction) 
 		eliminate_fisher_deads(dict_fisher,parameter_instruction)
 		return(action)
 
-	elif(option==10):
-		return(fisher.listenemies())
+	elif(option==10):	#GETI - get list of enemies
+		return(fisher.listenemies()) 
 
-	elif(option==11):	
-		return(fisher.getDetail())
+	elif(option==11):	#REPF - report actual situation of player
+		return(fisher.getDetail()) 
 
-	elif(option==12):
-		return(disconnect_player(fisher.getName(),dict_fisher,fisher))
+	elif(option==12):# EXIN, exit from game
+		return(disconnect_player(fisher.getName(),dict_fisher,fisher)) 
 	
 	else:
 		return None
