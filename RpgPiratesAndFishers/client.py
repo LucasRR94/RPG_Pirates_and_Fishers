@@ -125,27 +125,22 @@ def header_definition_client(num_state,version_protocol):
 		answer_temp = answer_temp+answer_temp1+" "+"\r\n "
 		return bytes(answer_temp,"utf-8")
 
-def check_len(message,fixed_lenght = 245):
+def check_lenght_complete_with_dont_care(message,fixed_lenght = 245):
 	"""
-	This function check a message(bytes), and if the lengh it's not equal to fixed_lenght,the
-	message it's modified, adding 'X' character, until have the specific lenght
+	This function check the lenght a message(bytes), and if the lengh it's not equal to fixed_lenght,the
+	message it's modified, append 'X' character, until have the specific lenght
 	@param message: (bytes) bytes coded at utf-8
 	@param fixed_lenght:(int) maximum number of characters in message
 	@para :(bytes or int) if have the specific lenght or less(it's modified and return), if is bigger or other problem 0.
 	"""
 	if(type(message)==bytes and type(fixed_lenght) == int):
-		if(len(message) == fixed_lenght):
-			return message
-		elif(len(message) < fixed_lenght):
-			answer_temp = message.decode("utf-8")
-			added = ""
-			for i in range(fixed_lenght-len(message)):
-				added+="X"
-			answer_temp1 = answer_temp + added
-			answer = bytes(answer_temp1,"utf-8")
-			return answer
-		else:
-			return 0
+		answer_temp = message.decode("utf-8")
+		added = ""
+		for i in range(fixed_lenght-len(message)):
+			added+="X"
+		answer_temp1 = answer_temp + added
+		answer = bytes(answer_temp1,"utf-8")
+		return answer
 	else:
 		return 0
 
@@ -159,7 +154,13 @@ def prepare_send_socket(list_of_messages,max_lenght):
 	if(type(list_of_messages) == list):
 		finalanswer = []
 		for i in range(len(list_of_messages)):
-			finalanswer.append(check_len(list_of_messages[i],max_lenght))
+			if(len(list_of_messages[i]) < max_lenght):
+				finalanswer.append(check_lenght_complete_with_dont_care(list_of_messages[i],max_lenght))
+			if(len(list_of_messages[i]) == max_lenght):
+				finalanswer.append(list_of_messages[i])
+			if(len(list_of_messages[i]) > max_lenght):# critic fail in the process	
+				print(len(list_of_messages[i]))
+				return 0
 		return finalanswer
 	else:
 		return 0
@@ -177,8 +178,9 @@ def insert_signing_on_messages(list_messages, crypto_enter):
 		if(crypto_enter!=None):
 			for i in range(len(list_messages)):
 				sig = signing_cyphertext(crypto_enter,list_messages[i])
-				finalanswer.append(list_messages[i]+sig)
-			return finalanswer
+				final_signing = b" \r\n " + sig
+				final_answer.append(list_messages[i]+final_signing)
+			return final_answer
 		else:
 			return list_messages
 	else:
