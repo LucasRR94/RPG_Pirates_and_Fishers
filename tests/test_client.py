@@ -100,39 +100,75 @@ def test_insert_signing_on_messages(standartinput,expectedResult):
 	else:
 		a == expectedResult	
 
-@pytest.mark.parametrize("standartinput",[
-	([1,"pirata mal encarado",120,"pirata mal encarado",1]),
-	([2,"Lock",124,"Lock",1]),
-	([5,"manzus",121,"manzus",1]),
-	([8,"kjada",122,"kjada",1]),
-	([0,"pirata mal encarado",123,1231,1]),
-	([1,"pirata mal encarado",120,"pirata mal encarad",0]),
-	([2,"Lock",124,"Loc",0]),
-	([5,"manzus",121,"anzus",0]),
-	([11,None,3,None,1]),
-	([11,None,4,None,0]),
-	([3,"Algo",123,"Algo",0]),
-	([3,"Algo",123,1232,1]),
-	([6,"Algo",123,1234,1]),
-	([7,"Algo",123,1235,1]),
-	([9,"Algo",123,1236,1]),
-	([10,"Algo",123,1237,1]),
-	([6,"Algo",123,"Algo",0]),
-	([7,"Algo",123,"Algo",0]),
-	([9,"Algo",123,"Algo",0]),
-	([10,"Algo",123,"Algo",0]),
+@pytest.mark.parametrize("standartinput,expectedResult",[([None,None,None,None,None],[0,0]),
+	([bytes(b64encode(os.urandom(1024)).decode("utf-8"),"utf-8"),245,header_definition_client(1,"0.0.0"),gen_footer(0),None,None],[1,list,0]),
+	([bytes(b64encode(os.urandom(1024)).decode("utf-8"),"utf-8"),None,header_definition_client(1,"0.0.0"),gen_footer(0),None,None],[1,int]),
+	([None,245,header_definition_client(4,"0.0.0"),gen_footer(0),None],[0,[b"PROC 0.0.0 \r\n  0 \r\n XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"]]),
+	([bytes(b64encode(os.urandom(1024)).decode("utf-8"),"utf-8"),245,header_definition_client(4,"0.0.0"),gen_footer(0),['rsa',generate_private_RSA_key(),2]],[1,list,1]),
+	([None,245,header_definition_client(4,"0.0.0"),gen_footer(0),['rsa',generate_private_RSA_key(),2]],[1,0])
 	])
-def test_menu_User_Option(standartinput,mocker):
-	res=""
-	# 123:"GAME"
-	# dict_header = {6:123,7:123,9:123,10:123}
-	# dict_secundary_content = {6:1234,7:1235,9:1236,10:1237}
+def test_prepare_answer_for_send(standartinput,expectedResult):	
+	if(expectedResult[0] == 0):
+		assert prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4]) == expectedResult[1]		
+	else:
+		if(expectedResult[1] == list):
+			assert type(prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4])) == expectedResult[1]
+			res = prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4]) 
+			assert len(res) >=5
+			if(expectedResult[2] == 0):
+				a = b""
+				for i in range(len(res)):
+					assert len(res[i]) == 245
+					a += res[i].split(b" \r\n ")[1]
+				assert standartinput[0] == a	
+
+			if(expectedResult[2] == 1): # it's necessary checking signing
+				res = prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4]) 
+				assert len(res) >=5
+				crypt_helper = ["rsa",standartinput[4][1].public_key(),1]
+				a = b""
+				for i in range(len(res)):
+					assert len(res[i]) == 245 + 512 +4
+					assert (check_signing_cyphertext(crypt_helper,res[i].split(b" \r\n ")[4],res[i][0:245])) ==1
+		if(expectedResult[1] == bytes):
+			assert type(prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4])) == list
+			res = prepare_answer_for_send(standartinput[0],standartinput[1],standartinput[2],standartinput[3],standartinput[4]) 
+			assert res == 1
+			crypt_helper = ["rsa",standartinput[4][1].public_key(),1]
+			assert (check_signing_cyphertext(crypt_helper,res[i].split(b" \r\n ")[4],res[i][0:245])) ==1
+# @pytest.mark.parametrize("standartinput",[
+# 	([1,"pirata mal encarado",120,"pirata mal encarado",1]),
+# 	([2,"Lock",124,"Lock",1]),
+# 	([5,"manzus",121,"manzus",1]),
+# 	([8,"kjada",122,"kjada",1]),
+# 	([0,"pirata mal encarado",123,1231,1]),
+# 	([1,"pirata mal encarado",120,"pirata mal encarad",0]),
+# 	([2,"Lock",124,"Loc",0]),
+# 	([5,"manzus",121,"anzus",0]),
+# 	([11,None,3,None,1]),
+# 	([11,None,4,None,0]),
+# 	([3,"Algo",123,"Algo",0]),
+# 	([3,"Algo",123,1232,1]),
+# 	([6,"Algo",123,1234,1]),
+# 	([7,"Algo",123,1235,1]),
+# 	([9,"Algo",123,1236,1]),
+# 	([10,"Algo",123,1237,1]),
+# 	([6,"Algo",123,"Algo",0]),
+# 	([7,"Algo",123,"Algo",0]),
+# 	([9,"Algo",123,"Algo",0]),
+# 	([10,"Algo",123,"Algo",0]),
+# 	])
+# def test_menu_User_Option(standartinput,mocker):
+# 	res=""
+# 	# 123:"GAME"
+# 	# dict_header = {6:123,7:123,9:123,10:123}
+# 	# dict_secundary_content = {6:1234,7:1235,9:1236,10:1237}
 	
-	mocker.patch('builtins.input',side_effect=[standartinput[0],standartinput[1]])
-	if(standartinput[4]==0):
-		assert menu_User_Option() != [standartinput[2],standartinput[3]]
-	else:	
-		assert menu_User_Option() == [standartinput[2],standartinput[3]]
+# 	mocker.patch('builtins.input',side_effect=[standartinput[0],standartinput[1]])
+# 	if(standartinput[4]==0):
+# 		assert menu_User_Option() != [standartinput[2],standartinput[3]]
+# 	else:	
+# 		assert menu_User_Option() == [standartinput[2],standartinput[3]]
 
 	
 
