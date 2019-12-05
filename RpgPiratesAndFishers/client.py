@@ -174,15 +174,12 @@ def insert_signing_on_messages(list_messages, crypto_enter):
 	@return :(list) of messages appended with signing
 	"""
 	final_answer = []
-	if(type(list_messages) == list):
-		if(crypto_enter!=None):
-			for i in range(len(list_messages)):
-				sig = signing_cyphertext(crypto_enter,list_messages[i])
-				final_signing = b" \r\n " + sig
-				final_answer.append(list_messages[i]+final_signing)
-			return final_answer
-		else:
-			return list_messages
+	if(type(list_messages) == list and crypto_enter != None):
+		for i in range(len(list_messages)):
+			sig = signing_cyphertext(crypto_enter,list_messages[i])
+			final_signing = b" \r\n " + sig
+			final_answer.append(list_messages[i]+final_signing)
+		return final_answer
 	else:
 		return 0
 
@@ -196,20 +193,48 @@ def prepare_answer_for_send(content,max_lenght_answer,header,footer,crypto_enter
 	@param footer:(bytes) footer of answer
 	@param crypto_enter: Crypto type, used for signing.
 
-	@return :(list of messages prepared for send) list of bytes.
+	@return :(list of messages prepared for send) list of bytes or 0.
 	"""
-	if(content != None):
-		content_list = verify_size_slice_content(content , max_lenght_answer - (len(header + footer) + 6))
-		final_messages = mounting_answer(content_list,header,footer)
-		prepared_messages = prepare_send_socket(final_messages,max_lenght_answer)
-		final_sockets_message = insert_signing_on_messages(prepared_messages,crypto_enter)
-		return final_sockets_message
+	if(type(max_lenght_answer) != int or type(max_lenght_answer) == None):
+		return 0
+
+	if(crypto_enter != None):
+		if(content != None):
+			try:
+				final_sockets_message = insert_signing_on_messages(prepare_send_socket(mounting_answer(verify_size_slice_content(content , max_lenght_answer - (len(header + footer) + 6)),header,footer),max_lenght_answer),crypto_enter)
+			except:
+				return 0
+			else:
+				return final_sockets_message
+		else:
+			create_list = []
+			create_list.append(header+footer)
+			try: 
+				final_sockets_message = insert_signing_on_messages(prepare_send_socket(create_list,max_lenght_answer),crypto_enter)
+			except:
+				return 0
+			else:	
+				return final_sockets_message
 	else:
-		create_list = []
-		create_list.append(header+footer)
-		prepared_messages = prepare_send_socket(create_list,max_lenght_answer)
-		final_sockets_message = insert_signing_on_messages(prepared_messages,crypto_enter)
-		return final_sockets_message
+		if(content != None):
+			try:
+				final_sockets_message = prepare_send_socket(mounting_answer(verify_size_slice_content(content , max_lenght_answer - (len(header + footer) + 6)),header,footer),max_lenght_answer)
+			except:
+				return 0
+			else:
+				return final_sockets_message
+		else:
+			create_list = []
+			
+			if(header == None or footer == None):
+				return 0		
+			create_list.append(header+footer)	
+			try: 
+				final_sockets_message = prepare_send_socket(create_list,max_lenght_answer)
+			except:
+				return 0
+			else:	
+				return final_sockets_message	
 
 def mount_answer_client(option_state_machine,secundary_option,content,max_lenght_answer,version_of_software,crypto_enter_signing):
 	"""
@@ -223,44 +248,34 @@ def mount_answer_client(option_state_machine,secundary_option,content,max_lenght
 	@return : (Bytes or None) the final message ready for be send in the socket,or None
 
 	"""
+	header_def_dict = { 0:1, 2:999 , 5:6, 7:7, 9:9, 10:998, 11:1010, 12:1010, 14:3}
+	secundary_helper = { 0:3, 1:4}
 	final_message_prepared_for_socket = None
-	if(option_state_machine == 0):
-		final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(1,version_of_software),gen_footer(1),None)
-
-	elif(option_state_machine == 2):
-		
-		if(secundary_option == 0): #Error finish with Exin
-			final_message_prepared_for_socket = prepare_answer_for_send(None,max_lenght_answer,header_definition_client(3,version_of_software),gen_footer(0),None)
-		
-		else:
-			final_message_prepared_for_socket = prepare_answer_for_send(None,max_lenght_answer,header_definition_client(4,version_of_software),gen_footer(0),None)
 	
-	elif(option_state_machine == 5):
-		final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(6,version_of_software),gen_footer(1),None)
+	try:
+		value = header_def_dict[option_state_machine]
+	except KeyError:
+		return None
+	else:
+		if(value == 999):
+			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_helper[secundary_option],version_of_software),gen_footer(0),crypto_enter_signing)
 
-	elif(option_state_machine == 7):
-		final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(7,version_of_software),gen_footer(1),crypto_enter_signing)
-
-	elif(option_state_machine == 9):
-		final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(9,version_of_software),gen_footer(1),crypto_enter_signing)
-
-	elif(option_state_machine == 10):
+		elif(value == 998):
 		
-		if(secundary_option == 0): # Nickname it's alredy in use, it's necessary other nickname
-			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(9,version_of_software),gen_footer(1),crypto_enter_signing)
+			if(secundary_option ==0):
+				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(9,version_of_software),gen_footer(0),crypto_enter_signing)
 		
-		else:
+			else:
+				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_option,version_of_software),gen_footer(0),crypto_enter_signing)
+		
+		elif(value == 1010):
 			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_option,version_of_software),gen_footer(1),crypto_enter_signing)
-	
-	elif(option_state_machine == 11 or option_state_machine == 12):
-		final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_option,version_of_software),gen_footer(1),crypto_enter_signing)
 
-	elif(option_state_machine == 14):
-		#SEND EXIN
-		final_message_prepared_for_socket = prepare_answer_for_send(None,max_lenght_answer,header_definition_client(3,version_of_software),gen_footer(0),crypto_enter_signing)
-	
-	return final_message_prepared_for_socket
+		else:
+			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(header_def_dict[option_state_machine],version_of_software),gen_footer(1),crypto_enter_signing)
 
+		return final_message_prepared_for_socket
+		
 def state_machine_client(actual_state,version_of_software,instruction_arg,max_lenght_message,crypto_enter_RSA,crypto_enter_AES,socket_send):
 	"""
 	This function, it's state machine, from the client side protocol.This function uses the actual state,
