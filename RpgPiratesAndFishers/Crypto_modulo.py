@@ -149,21 +149,21 @@ def signing_cyphertext(crypto_enter,cypher_text):
 		return 0
 
 
-def check_signing_cyphertext(crypto_enter,signing_message,cypher_text):
+def check_signing_cyphertext(crypto_enter,signed_message,cypher_text):
 	"""
 	This function check if the verification of signing RSA message is correct(1),
 	otherwise return flag answer false(0)
 	@param crypto_enter:(type crypto is a list[str,obj,int]), is used for decrypt message, ans sinalize
 	type of key used on the moment.
-	@param signing_message: (bytes type) 256 bytes lenght, signing that will be test
+	@param signed_message: (bytes type) 256 bytes lenght, signing that will be test
 	@param cypher_text: (bytes type) message , that will be used for the test
 	@return :(int)1 the verify is correct, 0 otherwise.
 	"""
-	if(type(crypto_enter) == list and type(cypher_text) == bytes and type(signing_message) == bytes):
+	if(type(crypto_enter) == list and type(cypher_text) == bytes and type(signed_message) == bytes):
 		if(crypto_enter[0] == 'RSA' or crypto_enter[0] == 'rsa'):
 			if(crypto_enter[2]==1):
 				try:
-					test = crypto_enter[1].verify(signing_message,cypher_text,padding.PSS(mgf = padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+					test = crypto_enter[1].verify(signed_message,cypher_text,padding.PSS(mgf = padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
 				except InvalidSignature:
 					return 0
 				else :
