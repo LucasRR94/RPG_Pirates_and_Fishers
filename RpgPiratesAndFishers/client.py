@@ -4,8 +4,10 @@ import math
 def verify_len(content,max_len = 245):
 	"""
 	This function received the strings that will be send, and calculated how much packets of lenght = @max_len it's necessary for send the message. 
+	
 	@param content:(str) represent the content it's necessary to send.
 	@param max_len :(int) it's the max size of packet, that actual it's limit for signing the message with RSA algorithm.
+	
 	@return : the number of packages necessary for send all the content or 0
 	"""
 	if(type(content) == bytes):
@@ -16,103 +18,73 @@ def verify_len(content,max_len = 245):
 	else:
 		return 0
 
-def verify_size_slice_content(content_message,max_tam_packet):
+
+def split_content_in_slices_equals_max_tam_packet(content_message,max_tam_packet):
 	"""
 	This function split the content_message, on the max tam available on the packet
+	
 	@param content_message : (bytes) string bytes, that will be split
 	@param max_tam_packet : (int) the size that it's available on the packet
+	
 	@return :(list bytes) of content sliced prepared for being encapsulated on the packed  or 0
 	"""
-	i = verify_len(content_message,max_tam_packet)
+	necessary_quantitie_of_packet = verify_len(content_message,max_tam_packet)
+	added_lenght_of_space_between_content_footer = 0
+	if(necessary_quantitie_of_packet > 1):
+		added_lenght_of_space_between_content_footer = 4
+	necessary_quantitie_of_packet = verify_len(content_message,max_tam_packet - 4)	
 	final_list = []
-	if(i!=0):
-		for k in range(i):
+	if(necessary_quantitie_of_packet!=0):
+		for k in range(necessary_quantitie_of_packet):
 			if(type(content_message) == bytes):
-				message = content_message[k*max_tam_packet:k*max_tam_packet+max_tam_packet] + b' \r\n '
+				message = content_message[k * (max_tam_packet-added_lenght_of_space_between_content_footer):k*(max_tam_packet-added_lenght_of_space_between_content_footer)+(max_tam_packet-added_lenght_of_space_between_content_footer)] + b' \r\n '
 			else:
-				message = content_message[k*max_tam_packet:k*max_tam_packet+max_tam_packet] + ' \r\n '
+				message = content_message[k * (max_tam_packet-added_lenght_of_space_between_content_footer):k*(max_tam_packet-added_lenght_of_space_between_content_footer)+(max_tam_packet-added_lenght_of_space_between_content_footer)] + ' \r\n '
 			final_list.append(message)
 		return final_list
 	else:
 		return 0
 
-def mounting_answer(content_list,header,footer):
+def append_content_in_headers(content_list,header,max_lenght):
 	"""
-	This function ,  will mounting the series of messages, with the list of contents, and the header and footer,
+	This function ,  will mounting the series(how many necessary to the max size of packet) of messages, 
+	with the list of contents, and the header, be prepared to be signed and encrypt,all the list with
+	the correct size of packet.
 	modifying the footer for representing the protocol. With or without continuation of answers.
+	
 	@param content_list: (list of bytes) list of all slices of content, that will form the answers
 	@param header: (bytes) headers of message
-	@param footer: (bytes) footers of message
+	@param max_lenght: (int) max lenght packet
+	
 	@return :(list or int) list of all the messages bytes, or 0 otherwise
 	"""
-	if(type(content_list) == list and type(header) == bytes and type(footer) == bytes):
-		final_messages = []
+	if(type(content_list) == list and type(header) == bytes):
+		final_list_messages = []
 		footer_final = ""
 		for i in range(len(content_list)):
-			if(i==len(content_list)-1):
-				temp = footer.decode("utf-8")
-				footer_final= "0"+" \r\n "
-				footer = bytes(footer_final,"utf-8")
+			if(i == len(content_list)-1): # the last message
+				#before send it's check the lenght of last message, if it's necessary append don't care content
+				final_list_messages.append(check_lenght_message_complete_with_dont_care(header + content_list[i]+b"0 \r\n ",max_lenght))		# send to preview just the last message
 			else:
-				temp = footer.decode("utf-8")
-				footer_final= "1"+" \r\n "
-				footer = bytes(footer_final,"utf-8")
-
-			final_messages.append(header+content_list[i]+footer)
-		return final_messages
+				final_list_messages.append(header+content_list[i]+b"1 \r\n ")
+		return final_list_messages
+	
+	if(content_list == 0 and type(header) == bytes):
+		#before send it's check the lenght of last message, if it's necessary append don't care content
+		final_list_messages = []
+		final_list_messages.append(check_lenght_message_complete_with_dont_care(header+b"0 \r\n ",max_lenght))		# send to preview just the last message
+		return final_list_messages
+	
 	else:
 		return 0
 
-# def produce_content_message_client(num_state,arg):
-# 	"""
-# 	This function generate content(between header and footer of messages) encapsulating instructions, arguments or keys.
-
-# 	@param num_state:(int) the number that indicate the necessary content
-# 	@param arg:(string or list(case of begg) or object in case of key) argument necessary for generate the content.
-
-# 	@return: (bytes or 0) the content for encapsulate in the message, or 0 in case of fail.
-# 	"""
-# 	dict_content = {1231:"LIFF",1232:"LSTI",1233:"GETS",1234:"DIRI",1235:"CATS",1236:"GETI",1237:"REPF"}
-# 	try:
-# 		answer_temp = dict_content[num_state]
-# 	except KeyError:
-# 		try:
-# 			if(i==1 or i==6 or i==9):
-# 				answer_temp = arg + " "+" \r\n "
-# 			if(i == 3 or i==122 or i==121 or i == 120 or i == 124):
-# 				answer_temp = bytes(arg,"utf-8") + " "+" \r\n "
-# 			if(i==10):
-# 				answer_temp = bytes(arg[0],"utf-8") + " "+" \r\n "+bytes(arg[1],"utf-8") + " "+" \r\n "
-# 		except:
-# 			return 0
-# 		else:
-# 			return answer_temp
-# 	else:
-# 		answer_temp = answer_temp+" "+" \r\n "
-# 		return bytes(answer_temp,"utf-8")
-
-def gen_footer(num_state):
-	"""
-	This function , return a bytes sequence, that represent a footer of message
-
-	@param num_state:(int) that indicate that if has or not continuation
-
-	@return:(bytes) bytes sequence, or 0
-	"""
-	if(num_state == 1):
-		answer_temp = " 1 \r\n "
-		return bytes(answer_temp,"utf-8")
-	if(num_state == 0):
-		answer_temp = " 0 \r\n "
-		return bytes(answer_temp,"utf-8")
-	else:
-		return 0		
-
-def header_definition_client(num_state,version_protocol):
+def header_definition(num_state,version_protocol):
 	"""
 	This function generate Headers of client messages.
+	
 	@param num_state: (int) it's a number that indicate the instruction for header
 	@param version_protocol:(str) that indicate the actual version of the game
+	
 	@return :(bytes or 0) bytes that are the header of message.
 	"""
 	dict_headers = {1:"HIII",3:"EXIN",4:"PROC",6:"CONF",7:"EKEY",9:"BEGG",120:"USEI",121:"MOVF",122:"ATQE",123:"GAME",124:"CATI"}
@@ -125,52 +97,36 @@ def header_definition_client(num_state,version_protocol):
 		answer_temp = answer_temp+answer_temp1+" "+"\r\n "
 		return bytes(answer_temp,"utf-8")
 
-def check_lenght_complete_with_dont_care(message,fixed_lenght = 245):
+def check_lenght_message_complete_with_dont_care(message,fixed_lenght = 245):
 	"""
 	This function check the lenght a message(bytes), and if the lengh it's not equal to fixed_lenght,the
 	message it's modified, append 'X' character, until have the specific lenght
+	
 	@param message: (bytes) bytes coded at utf-8
 	@param fixed_lenght:(int) maximum number of characters in message
-	@para :(bytes or int) if have the specific lenght or less(it's modified and return), if is bigger or other problem 0.
+	
+	@return :(bytes or int) if have the specific lenght or less(it's modified and return), if is bigger or other problem 0.
 	"""
 	if(type(message)==bytes and type(fixed_lenght) == int):
 		answer_temp = message.decode("utf-8")
-		added = ""
+		added_dont_care = ""
 		for i in range(fixed_lenght-len(message)):
-			added+="X"
-		answer_temp1 = answer_temp + added
+			added_dont_care+="X"
+		answer_temp1 = answer_temp + added_dont_care
 		answer = bytes(answer_temp1,"utf-8")
 		return answer
 	else:
 		return 0
 
-def prepare_send_socket(list_of_messages,max_lenght):
-	"""
-	This function check the lenght, and prepare a list, for send message or messages.
-	@param message:(list) has one message, or multiple messages.
-	@param max_lenght:(int) maximum number of characters in message
-	@return:(list of messages) with the correct lenght, or 0
-	"""
-	if(type(list_of_messages) == list):
-		finalanswer = []
-		for i in range(len(list_of_messages)):
-			if(len(list_of_messages[i]) < max_lenght):
-				finalanswer.append(check_lenght_complete_with_dont_care(list_of_messages[i],max_lenght))
-			if(len(list_of_messages[i]) == max_lenght):
-				finalanswer.append(list_of_messages[i])
-			if(len(list_of_messages[i]) > max_lenght):# critic fail in the process	
-				print(len(list_of_messages[i]))
-				return 0
-		return finalanswer
-	else:
-		return 0
 
 def insert_signing_on_messages(list_messages, crypto_enter):
 	"""
 	This function, receive a messagem with lenght of 245 bytes long, and append to every message a 512 signing
 	using the Crypto_modulo
+	
 	@param list_messages:(list) have all the messages that will be signing
 	@param crypto_enter_RSA: (Crypto type) have the private key that will signing the messages , in case of error 0.
+	
 	@return :(list) of messages appended with signing
 	"""
 	final_answer = []
@@ -180,61 +136,38 @@ def insert_signing_on_messages(list_messages, crypto_enter):
 			final_signing = b" \r\n " + sig
 			final_answer.append(list_messages[i]+final_signing)
 		return final_answer
+	if(type(list_messages) == list and crypto_enter == None): # there is not signing to do
+		return list_messages
 	else:
 		return 0
 
-def prepare_answer_for_send(content,max_lenght_answer,header,footer,crypto_enter):
+def prepare_answer_for_send(content,max_lenght_answer,header,crypto_enter):
 	"""
 	This function encapsulate, functions for, check the lenght of content, mounting content with header and footers,
 	append don't care content in answers, and add signing in answers to prepare to send.
+	
 	@param content:(bytes) necessary content, for insert on the answer.
 	@param max_lenght_answer:(int) maximum , lenght of answer
 	@param header:(bytes) header of answer
-	@param footer:(bytes) footer of answer
 	@param crypto_enter: Crypto type, used for signing.
 
 	@return :(list of messages prepared for send) list of bytes or 0.
 	"""
+
 	if(type(max_lenght_answer) != int or type(max_lenght_answer) == None):
 		return 0
-
-	if(crypto_enter != None):
-		if(content != None):
-			try:
-				final_sockets_message = insert_signing_on_messages(prepare_send_socket(mounting_answer(verify_size_slice_content(content , max_lenght_answer - (len(header + footer) + 6)),header,footer),max_lenght_answer),crypto_enter)
-			except:
-				return 0
-			else:
-				return final_sockets_message
-		else:
-			create_list = []
-			create_list.append(header+footer)
-			try: 
-				final_sockets_message = insert_signing_on_messages(prepare_send_socket(create_list,max_lenght_answer),crypto_enter)
-			except:
-				return 0
-			else:	
-				return final_sockets_message
 	else:
-		if(content != None):
+		try:
+			prepared_messages = append_content_in_headers( split_content_in_slices_equals_max_tam_packet(content , max_lenght_answer - (len(header) + len(b"0 \r\n")+1)),header,max_lenght_answer)
+		except:
+			return 0
+		else:
 			try:
-				final_sockets_message = prepare_send_socket(mounting_answer(verify_size_slice_content(content , max_lenght_answer - (len(header + footer) + 6)),header,footer),max_lenght_answer)
+				final_sockets_messages = insert_signing_on_messages(prepared_messages,crypto_enter)
 			except:
 				return 0
 			else:
-				return final_sockets_message
-		else:
-			create_list = []
-			
-			if(header == None or footer == None):
-				return 0		
-			create_list.append(header+footer)	
-			try: 
-				final_sockets_message = prepare_send_socket(create_list,max_lenght_answer)
-			except:
-				return 0
-			else:	
-				return final_sockets_message	
+				return final_sockets_messages
 
 def mount_answer_client(option_state_machine,secundary_option,content,max_lenght_answer,version_of_software,crypto_enter_signing):
 	"""
@@ -258,21 +191,21 @@ def mount_answer_client(option_state_machine,secundary_option,content,max_lenght
 		return None
 	else:
 		if(value == 999):
-			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_helper[secundary_option],version_of_software),gen_footer(0),crypto_enter_signing)
+			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition(secundary_helper[secundary_option],version_of_software),crypto_enter_signing)
 
 		elif(value == 998):
 		
 			if(secundary_option ==0):
-				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(9,version_of_software),gen_footer(0),crypto_enter_signing)
+				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition(9,version_of_software),crypto_enter_signing)
 		
 			else:
-				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_option,version_of_software),gen_footer(0),crypto_enter_signing)
+				final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition(secundary_option,version_of_software),crypto_enter_signing)
 		
 		elif(value == 1010):
-			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(secundary_option,version_of_software),gen_footer(1),crypto_enter_signing)
+			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition(secundary_option,version_of_software),crypto_enter_signing)
 
 		else:
-			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition_client(header_def_dict[option_state_machine],version_of_software),gen_footer(1),crypto_enter_signing)
+			final_message_prepared_for_socket = prepare_answer_for_send(content,max_lenght_answer,header_definition(header_def_dict[option_state_machine],version_of_software),crypto_enter_signing)
 
 		return final_message_prepared_for_socket
 		
@@ -319,7 +252,7 @@ def state_machine_client(actual_state,version_of_software,instruction_arg,max_le
 
 	elif(actual_state == 4): #action state 4
 		final_answer_server = mount_answer_client(2,1,None,max_lenght_message,version_of_software,None)
-		# header = header_definition_client(4,version_of_software) # action state 4
+		# header = header_definition(4,version_of_software) # action state 4
 		# footer = gen_footer(0)
 		# final_message_prepared_for_socket = prepare_answer_for_send(None,max_lenght_message,header,footer,None)
 		print(final_message_prepared_for_socket)
@@ -336,7 +269,7 @@ def state_machine_client(actual_state,version_of_software,instruction_arg,max_le
 
 	elif(actual_state == 6): # action state 6
 		#receive(message)
-		# header = header_definition_client(6,version_of_software)
+		# header = header_definition(6,version_of_software)
 		# footer = gen_footer(1)
 		pem_format   = serialize_key_RSA(crypto_enter_RSA[1].public_key())
 		# final_message_prepared_for_socket = prepare_answer_for_send(pem_format,max_lenght_message,header,footer,None)
